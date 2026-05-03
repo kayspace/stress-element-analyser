@@ -276,6 +276,36 @@
       .shear-convention span {
         color: #c9a84c;
       }
+      .footer {
+        margin-top: 18px;
+        width: 100%;
+        max-width: 540px;
+        text-align: center;
+        font-size: 11px;
+        color: #6f6b63;
+        line-height: 1.6;
+        padding: 10px 12px;
+        background: #141318;
+        border: 1px solid #1e1d1a;
+        border-radius: 8px;
+        text-transform: lowercase;
+      }
+
+      .footer a {
+        color: #7eb8f0;
+        text-decoration: none;
+      }
+
+      .footer a:hover {
+        text-decoration: underline;
+        color: #a8d0ff;
+      }
+
+      .footer .sub {
+        display: block;
+        margin-top: 4px;
+        color: #5a5752;
+      }
     </style>
   </head>
   <body>
@@ -745,5 +775,15 @@
       // Auto-calculate on load with default values
       calculate();
     </script>
+
+    <div class="footer">
+      © 2026 Kay — Licensed under GPL-3.0  
+      <span class="sub">
+        This project is open-source. View source on 
+        <a href="https://github.com/kayspace/stress-element-analyser" target="_blank">
+          GitHub
+        </a>
+      </span>
+    </div>
   </body>
 </html>
