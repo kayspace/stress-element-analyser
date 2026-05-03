@@ -1,0 +1,749 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stress Element Analyzer</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: #0f0f13;
+        color: #e8e6e0;
+        font-family: "Segoe UI", system-ui, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 16px;
+        gap: 0;
+      }
+
+      h1 {
+        font-size: 17px;
+        font-weight: 500;
+        color: #c8c5bc;
+        margin-bottom: 3px;
+        letter-spacing: 0.02em;
+      }
+      .subtitle {
+        font-size: 12px;
+        color: #5a5752;
+        margin-bottom: 16px;
+      }
+
+      .input-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 14px;
+        width: 100%;
+        max-width: 540px;
+      }
+      .inp-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex: 1;
+        min-width: 130px;
+      }
+      .inp-group label {
+        font-size: 11px;
+        color: #6a6760;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+      .inp-group input {
+        background: #1a1917;
+        border: 1px solid #2e2d2a;
+        border-radius: 6px;
+        color: #e0ddd8;
+        font-size: 14px;
+        font-family: inherit;
+        padding: 8px 10px;
+        outline: none;
+        transition: border-color 0.15s;
+        width: 100%;
+      }
+      .inp-group input:focus {
+        border-color: #3d5a80;
+      }
+      .inp-group input.error {
+        border-color: #8b2020;
+      }
+
+      .sign-note {
+        font-size: 11px;
+        color: #5a5248;
+        text-align: center;
+        margin-bottom: 10px;
+        line-height: 1.6;
+        max-width: 540px;
+      }
+      .sign-note span {
+        color: #888;
+      }
+
+      .calc-btn {
+        background: #1c2d1c;
+        border: 1px solid #2d4d2d;
+        color: #7ec87e;
+        font-size: 13px;
+        padding: 9px 28px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.15s;
+        margin-bottom: 14px;
+      }
+      .calc-btn:hover {
+        background: #223322;
+        border-color: #3d6d3d;
+      }
+      .calc-btn:active {
+        transform: scale(0.97);
+      }
+
+      .results-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        width: 100%;
+        max-width: 540px;
+        margin-bottom: 14px;
+      }
+      .rcard {
+        background: #1a1917;
+        border: 1px solid #252320;
+        border-radius: 8px;
+        padding: 10px 14px;
+      }
+      .rcard .rl {
+        font-size: 10px;
+        color: #5a5752;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+      }
+      .rcard .rv {
+        font-size: 15px;
+        font-weight: 500;
+      }
+      .rv.pos {
+        color: #5aa8e0;
+      }
+      .rv.neg {
+        color: #e06060;
+      }
+      .rv.neu {
+        color: #c8c5bc;
+      }
+
+      .btns {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 14px;
+      }
+      button.sb {
+        font-size: 13px;
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: 1px solid #2e2d2a;
+        background: #1a1917;
+        color: #b0ada6;
+        cursor: pointer;
+        transition: all 0.15s;
+        font-family: inherit;
+      }
+      button.sb:hover {
+        background: #252320;
+        color: #e0ddd8;
+      }
+      button.sb.act {
+        background: #1c2d4a;
+        color: #7eb8f0;
+        border-color: #2d4d7a;
+      }
+      button.sb#ba {
+        border-color: #3d3620;
+        color: #c9a84c;
+        background: #1e1b10;
+      }
+      button.sb#ba:hover {
+        background: #252014;
+      }
+
+      canvas {
+        display: block;
+        border-radius: 12px;
+        background: #141318;
+        border: 1px solid #222028;
+        margin-bottom: 10px;
+      }
+
+      .legend {
+        display: flex;
+        gap: 14px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 10px;
+      }
+      .li {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        color: #7a776e;
+      }
+      .ld {
+        width: 16px;
+        height: 3px;
+        border-radius: 2px;
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 8px;
+        width: 100%;
+        max-width: 540px;
+        margin-bottom: 10px;
+      }
+      .card {
+        background: #1a1917;
+        border: 1px solid #252320;
+        border-radius: 8px;
+        padding: 9px 10px;
+        text-align: center;
+      }
+      .clabel {
+        font-size: 10px;
+        color: #5a5752;
+        margin-bottom: 2px;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+      .cval {
+        font-size: 13px;
+        font-weight: 500;
+        color: #c8c5bc;
+      }
+
+      .note {
+        font-size: 12px;
+        color: #7a776e;
+        text-align: center;
+        max-width: 540px;
+        line-height: 1.7;
+        min-height: 48px;
+        background: #141318;
+        border: 1px solid #1e1d1a;
+        border-radius: 8px;
+        padding: 10px 14px;
+        width: 100%;
+      }
+      .note strong {
+        color: #aaa9a2;
+      }
+
+      .shear-convention {
+        max-width: 540px;
+        width: 100%;
+        background: #181610;
+        border: 1px solid #2a2818;
+        border-radius: 8px;
+        padding: 10px 14px;
+        margin-bottom: 14px;
+      }
+      .shear-convention .sc-title {
+        font-size: 11px;
+        color: #7a6e40;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin-bottom: 6px;
+      }
+      .shear-convention p {
+        font-size: 11px;
+        color: #6a6450;
+        line-height: 1.7;
+      }
+      .shear-convention span {
+        color: #c9a84c;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Stress Element Analyzer</h1>
+    <p class="subtitle">
+      Enter any stress state — get principal stresses, max shear, and animated
+      element
+    </p>
+
+    <div class="shear-convention">
+      <div class="sc-title">Sign convention</div>
+      <p>
+        Normal stress: <span>positive = tension</span>, negative =
+        compression.<br />
+        Shear τxy: <span>positive</span> = on +x face, shear acts in
+        <span>+y direction</span> (counter-clockwise tendency on element).<br />
+        <span>Negative</span> τxy = on +x face, shear acts in
+        <span>−y direction</span> (clockwise tendency on element).
+      </p>
+    </div>
+
+    <div class="input-row">
+      <div class="inp-group">
+        <label>σx (MPa)</label>
+        <input type="number" id="isx" value="86" placeholder="e.g. 86" />
+      </div>
+      <div class="inp-group">
+        <label>σy (MPa)</label>
+        <input type="number" id="isy" value="-28" placeholder="e.g. -28" />
+      </div>
+      <div class="inp-group">
+        <label>τxy (MPa)</label>
+        <input type="number" id="itxy" value="-32" placeholder="e.g. -32" />
+      </div>
+    </div>
+
+    <button class="calc-btn" onclick="calculate()">
+      Calculate &amp; Animate
+    </button>
+
+    <div class="results-grid" id="resGrid" style="display: none">
+      <div class="rcard">
+        <div class="rl">σ₁ (major principal)</div>
+        <div class="rv" id="rs1"></div>
+      </div>
+      <div class="rcard">
+        <div class="rl">σ₂ (minor principal)</div>
+        <div class="rv" id="rs2"></div>
+      </div>
+      <div class="rcard">
+        <div class="rl">τ_max</div>
+        <div class="rv" id="rtmax"></div>
+      </div>
+      <div class="rcard">
+        <div class="rl">σ_avg (on max shear faces)</div>
+        <div class="rv" id="rsavg"></div>
+      </div>
+      <div class="rcard">
+        <div class="rl">θ for σ₁ face</div>
+        <div class="rv neu" id="rtheta1"></div>
+      </div>
+      <div class="rcard">
+        <div class="rl">θ for max shear face</div>
+        <div class="rv neu" id="rthetaS"></div>
+      </div>
+    </div>
+
+    <div id="animSection" style="display: none">
+      <div
+        class="btns"
+        style="
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+          justify-content: center;
+          margin-bottom: 14px;
+        "
+      >
+        <button class="sb act" id="b0" onclick="go(0)">1 — Original</button>
+        <button class="sb" id="b1" onclick="go(1)">
+          2 — Principal stresses
+        </button>
+        <button class="sb" id="b2" onclick="go(2)">3 — Max shear</button>
+        <button class="sb" id="ba" onclick="autoPlay()">
+          &#9654; Auto-play
+        </button>
+      </div>
+
+      <canvas id="cv" width="520" height="360"></canvas>
+
+      <div class="legend">
+        <div class="li">
+          <div class="ld" style="background: #378add"></div>
+          Tension (outward)
+        </div>
+        <div class="li">
+          <div class="ld" style="background: #e24b4a"></div>
+          Compression (inward)
+        </div>
+        <div class="li">
+          <div class="ld" style="background: #ba7517"></div>
+          Shear
+        </div>
+      </div>
+
+      <div class="cards">
+        <div class="card">
+          <div class="clabel">Rotation</div>
+          <div class="cval" id="iv0">0°</div>
+        </div>
+        <div class="card">
+          <div class="clabel">σ on faces</div>
+          <div class="cval" id="iv1">—</div>
+        </div>
+        <div class="card">
+          <div class="clabel">τ on faces</div>
+          <div class="cval" id="iv2">—</div>
+        </div>
+      </div>
+
+      <div class="note" id="nt">—</div>
+    </div>
+
+    <script>
+      const cv = document.getElementById("cv");
+      const ctx = cv.getContext("2d");
+      const W = 520,
+        H = 360,
+        CX = W / 2,
+        CY = H / 2;
+
+      let SX = 86,
+        SY = -28,
+        TXY = -32;
+      let AVG, RAD_R, S1, S2, THETA1, THETAS;
+      let curAngle = 0,
+        animId = null,
+        autoT = null;
+      let notes = [];
+
+      function calculate() {
+        const sx = parseFloat(document.getElementById("isx").value);
+        const sy = parseFloat(document.getElementById("isy").value);
+        const txy = parseFloat(document.getElementById("itxy").value);
+
+        if (isNaN(sx) || isNaN(sy) || isNaN(txy)) {
+          alert("Please enter valid numbers for all three fields.");
+          return;
+        }
+
+        SX = sx;
+        SY = sy;
+        TXY = txy;
+        AVG = (SX + SY) / 2;
+        RAD_R = Math.sqrt(((SX - SY) / 2) ** 2 + TXY ** 2);
+        S1 = AVG + RAD_R;
+        S2 = AVG - RAD_R;
+
+        const tp = (0.5 * Math.atan2(2 * TXY, SX - SY) * 180) / Math.PI;
+
+        const t1 = tp;
+        const t2 = tp + (tp <= 0 ? 90 : -90);
+        const tA = Math.abs(t1) <= 90 ? t1 : t2;
+        const tB = Math.abs(t2) <= 90 ? t2 : t1;
+
+        function stressNormal(deg) {
+          const t = (deg * Math.PI) / 180;
+          return (
+            AVG + ((SX - SY) / 2) * Math.cos(2 * t) + TXY * Math.sin(2 * t)
+          );
+        }
+
+        const snA = stressNormal(tA);
+        const snB = stressNormal(tB);
+
+        const theta1raw = Math.abs(snA - S1) < Math.abs(snB - S1) ? tA : tB;
+        THETA1 = theta1raw < 0 ? theta1raw + 180 : theta1raw;
+        THETAS = THETA1 - 45;
+
+        document.getElementById("rs1").textContent = S1.toFixed(2) + " MPa";
+        document.getElementById("rs1").className =
+          "rv " + (S1 >= 0 ? "pos" : "neg");
+        document.getElementById("rs2").textContent = S2.toFixed(2) + " MPa";
+        document.getElementById("rs2").className =
+          "rv " + (S2 >= 0 ? "pos" : "neg");
+        document.getElementById("rtmax").textContent =
+          RAD_R.toFixed(2) + " MPa";
+        document.getElementById("rtmax").className = "rv pos";
+        document.getElementById("rsavg").textContent = AVG.toFixed(2) + " MPa";
+        document.getElementById("rsavg").className =
+          "rv " + (AVG >= 0 ? "pos" : "neg");
+        document.getElementById("rtheta1").textContent =
+          THETA1.toFixed(1) + "°";
+        document.getElementById("rthetaS").textContent =
+          THETAS.toFixed(1) + "°";
+
+        const shearTendency =
+          TXY > 0
+            ? "counter-clockwise (positive shear)"
+            : TXY < 0
+              ? "clockwise (negative shear)"
+              : "zero — no shear";
+
+        notes = [
+          `<strong>Original state.</strong> σx = ${SX} MPa, σy = ${SY} MPa, τxy = ${TXY} MPa. Shear tendency on element: ${shearTendency}. All values as given in the problem.`,
+          `<strong>Principal stress element — rotated to ${THETA1.toFixed(1)}°.</strong> Shear is zero on all faces. σ₁ = ${S1.toFixed(2)} MPa and σ₂ = ${S2.toFixed(2)} MPa. No shear arrows on this element.`,
+          `<strong>Max shear element — rotated to ${THETAS.toFixed(1)}° (45° past principal).</strong> τ_max = ${RAD_R.toFixed(2)} MPa on all faces. Normal stress on every face = σ_avg = ${AVG.toFixed(2)} MPa.`,
+        ];
+
+        document.getElementById("resGrid").style.display = "grid";
+        document.getElementById("animSection").style.display = "block";
+
+        curAngle = 0;
+        [0, 1, 2].forEach((i) =>
+          document.getElementById("b" + i).classList.toggle("act", i === 0),
+        );
+        draw(0);
+        document.getElementById("nt").innerHTML = notes[0];
+        document.getElementById("iv1").textContent =
+          SX.toFixed(1) + " / " + SY.toFixed(1);
+        document.getElementById("iv2").textContent = TXY.toFixed(1) + " MPa";
+        document.getElementById("iv0").textContent = "0°";
+      }
+
+      function stressAt(deg) {
+        const t = (deg * Math.PI) / 180;
+        return {
+          sn: AVG + ((SX - SY) / 2) * Math.cos(2 * t) + TXY * Math.sin(2 * t),
+          sn2: AVG - ((SX - SY) / 2) * Math.cos(2 * t) - TXY * Math.sin(2 * t),
+          tn: -((SX - SY) / 2) * Math.sin(2 * t) + TXY * Math.cos(2 * t),
+        };
+      }
+
+      function arrow(x1, y1, x2, y2, col, w) {
+        w = w || 2.2;
+        const dx = x2 - x1,
+          dy = y2 - y1,
+          len = Math.sqrt(dx * dx + dy * dy);
+        if (len < 3) return;
+        const ux = dx / len,
+          uy = dy / len;
+        ctx.save();
+        ctx.strokeStyle = col;
+        ctx.fillStyle = col;
+        ctx.lineWidth = w;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2 - ux * 10, y2 - uy * 10);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x2, y2);
+        ctx.lineTo(x2 - ux * 10 - uy * 5.5, y2 - uy * 10 + ux * 5.5);
+        ctx.lineTo(x2 - ux * 10 + uy * 5.5, y2 - uy * 10 - ux * 5.5);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function draw(angle) {
+        ctx.clearRect(0, 0, W, H);
+        const rad = (angle * Math.PI) / 180;
+        const cos = Math.cos(rad),
+          sin = Math.sin(rad);
+        const hs = 70;
+
+        ctx.save();
+        ctx.translate(CX, CY);
+
+        // Reference axes
+        ctx.setLineDash([5, 4]);
+        ctx.strokeStyle = "#353330";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(-155, 0);
+        ctx.lineTo(155, 0);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(0, -155);
+        ctx.lineTo(0, 155);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.font = "13px Segoe UI,system-ui,sans-serif";
+        ctx.fillStyle = "#4a4744";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "middle";
+        ctx.fillText("x", 158, 0);
+        ctx.textAlign = "center";
+        ctx.textBaseline = "bottom";
+        ctx.fillText("y", 0, -158);
+
+        // The element square
+        const corners = [
+          [hs * cos - hs * sin, hs * sin + hs * cos],
+          [-hs * cos - hs * sin, -hs * sin + hs * cos],
+          [-hs * cos + hs * sin, -hs * sin - hs * cos],
+          [hs * cos + hs * sin, hs * sin - hs * cos],
+        ];
+        ctx.beginPath();
+        ctx.moveTo(corners[0][0], corners[0][1]);
+        for (let i = 1; i < 4; i++) ctx.lineTo(corners[i][0], corners[i][1]);
+        ctx.closePath();
+        ctx.fillStyle = "#1c1b20";
+        ctx.fill();
+        ctx.strokeStyle = "#3a3850";
+        ctx.lineWidth = 1.8;
+        ctx.stroke();
+
+        const st = stressAt(angle);
+
+        // Face center vectors (in rotated frame)
+        // Right face: outward normal is +x' direction = (cos, sin)
+        // Top face: outward normal is +y' direction = (-sin, cos)
+        const fRx = cos * hs,
+          fRy = sin * hs;
+        const fTx = -sin * hs,
+          fTy = cos * hs;
+
+        // Normal arrows
+        function normArr(fx, fy, nx, ny, val) {
+          const col = val >= 0 ? "#378ADD" : "#E24B4A";
+          const base = 18,
+            scale = 55;
+          const mag =
+            base +
+            Math.min(
+              Math.abs(val) /
+                Math.max(Math.abs(SX), Math.abs(SY), Math.abs(S1), 1),
+              1,
+            ) *
+              scale;
+          if (val >= 0) {
+            arrow(fx, fy, fx + nx * mag, fy + ny * mag, col);
+            arrow(-fx, -fy, -fx - nx * mag, -fy - ny * mag, col);
+          } else {
+            arrow(fx + nx * mag, fy + ny * mag, fx, fy, col);
+            arrow(-fx - nx * mag, -fy - ny * mag, -fx, -fy, col);
+          }
+        }
+        normArr(fRx, fRy, cos, sin, st.sn);
+        normArr(fTx, fTy, -sin, cos, st.sn2);
+
+        // Shear arrows — same logic as original animation
+        if (Math.abs(st.tn) > 0.8) {
+          const d = st.tn > 0 ? 1 : -1;
+          const off = 28;
+          arrow(
+            fRx - sin * d * off,
+            fRy + cos * d * off,
+            fRx + sin * d * off,
+            fRy - cos * d * off,
+            "#BA7517",
+            2,
+          );
+          arrow(
+            -fRx + sin * d * off,
+            -fRy - cos * d * off,
+            -fRx - sin * d * off,
+            -fRy + cos * d * off,
+            "#BA7517",
+            2,
+          );
+          arrow(
+            fTx + cos * d * off,
+            fTy + sin * d * off,
+            fTx - cos * d * off,
+            fTy - sin * d * off,
+            "#BA7517",
+            2,
+          );
+          arrow(
+            -fTx - cos * d * off,
+            -fTy - sin * d * off,
+            -fTx + cos * d * off,
+            -fTy + sin * d * off,
+            "#BA7517",
+            2,
+          );
+        }
+
+        // Rotation arc
+        if (Math.abs(angle) > 0.5) {
+          ctx.beginPath();
+          ctx.arc(0, 0, 40, 0, -rad, rad > 0);
+          ctx.strokeStyle = "#5a5444";
+          ctx.lineWidth = 1.2;
+          ctx.setLineDash([3, 2]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.fillStyle = "#7a7060";
+          ctx.font = "11px Segoe UI,system-ui";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          const ma = -rad / 2;
+          ctx.fillText(
+            angle.toFixed(1) + "°",
+            Math.cos(ma) * 56,
+            Math.sin(ma) * 56,
+          );
+        }
+
+        ctx.restore();
+
+        const la = ((Math.round(angle) % 360) + 360) % 360;
+        document.getElementById("iv0").textContent = la + "°";
+        document.getElementById("iv1").textContent =
+          st.sn.toFixed(1) + " / " + st.sn2.toFixed(1);
+        document.getElementById("iv2").textContent = st.tn.toFixed(1) + " MPa";
+      }
+
+      function animTo(target, onDone) {
+        if (animId) cancelAnimationFrame(animId);
+        const start = curAngle,
+          diff = target - start;
+        const dur = Math.max(Math.abs(diff) * 16, 500);
+        const t0 = performance.now();
+        function step(now) {
+          const p = Math.min((now - t0) / dur, 1);
+          const e = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;
+          curAngle = start + diff * e;
+          draw(curAngle);
+          if (p < 1) {
+            animId = requestAnimationFrame(step);
+          } else {
+            curAngle = target;
+            draw(target);
+            if (onDone) onDone();
+          }
+        }
+        animId = requestAnimationFrame(step);
+      }
+
+      function go(m) {
+        if (autoT) {
+          clearTimeout(autoT);
+          autoT = null;
+        }
+        [0, 1, 2].forEach((i) =>
+          document.getElementById("b" + i).classList.toggle("act", i === m),
+        );
+        const targets = [0, THETA1, THETAS];
+        animTo(targets[m]);
+        document.getElementById("nt").innerHTML = notes[m];
+      }
+
+      function autoPlay() {
+        if (autoT) {
+          clearTimeout(autoT);
+          autoT = null;
+        }
+        const seq = [0, 1, 2, 0];
+        let i = 0;
+        function next() {
+          if (i >= seq.length) return;
+          go(seq[i]);
+          i++;
+          autoT = setTimeout(next, 3600);
+        }
+        next();
+      }
+
+      // Allow Enter key to trigger calculate
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") calculate();
+      });
+
+      // Auto-calculate on load with default values
+      calculate();
+    </script>
+  </body>
+</html>
