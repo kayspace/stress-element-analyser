@@ -276,6 +276,55 @@
       .shear-convention span {
         color: #c9a84c;
       }
+      .accordion {
+        width: 100%;
+        max-width: 540px;
+        margin-top: 6px;
+        margin-bottom: 14px;
+      }
+
+      .acc-btn {
+        width: 100%;
+        background: #141318;
+        border: 1px solid #1e1d1a;
+        color: #c8c5bc;
+        font-size: 11px;
+        padding: 10px 14px;
+        border-radius: 8px;
+        text-align: left;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.15s;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .acc-btn:hover {
+        background: #1a1917;
+      }
+
+      .acc-btn.active {
+        border-color: #2d4d7a;
+        color: #7eb8f0;
+      }
+
+      .acc-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.25s ease;
+        background: #141318;
+        border: 1px solid #1e1d1a;
+        border-top: none;
+        border-radius: 0 0 8px 8px;
+        padding: 0 14px;
+      }
+
+      .acc-content p {
+        font-size: 11px;
+        color: #7a776e;
+        line-height: 1.7;
+        margin: 10px 0;
+      }
       .footer {
         margin-top: 18px;
         width: 100%;
@@ -774,7 +823,35 @@
 
       // Auto-calculate on load with default values
       calculate();
+
+      function toggleAcc(btn) {
+        btn.classList.toggle("active");
+        const content = btn.nextElementSibling;
+
+        if (content.style.maxHeight) {
+          content.style.maxHeight = null;
+        } else {
+          content.style.maxHeight = content.scrollHeight + "px";
+        }
+      }
     </script>
+
+    <div class="accordion">
+      <button class="acc-btn" onclick="toggleAcc(this)">
+        <div>Tips: Drawing Transformed Stress Elements</div>
+        <div>▼</div>
+      </button>
+      <div class="acc-content">
+        <p>
+          • Calculate σ₁ and σ₂ using principal stress equations.<br />
+          • Compute θₚ from the tan(2θₚ) relation.<br />
+          • Verify orientation by substituting θₚ into the normal stress transformation equation.<br />
+          • Draw the principal element at θₚ: normal stresses only, no shear.<br />
+          • Rotate 45° from θₚ to obtain the maximum shear orientation.<br />
+          • Draw the max shear element: σ_avg on all faces, τ_max forming a pinwheel pattern.
+        </p>
+      </div>
+    </div>
 
     <div class="footer">
       © 2026 kay — Licensed under GPL-3.0  
