@@ -391,9 +391,18 @@
       </div>
     </div>
 
-    <button class="calc-btn" onclick="calculate()">
-      Calculate &amp; Animate
-    </button>
+    <div>
+      <button class="calc-btn" onclick="calculate()">
+        Calculate &amp; Animate
+      </button>
+      <button
+        class="calc-btn"
+        onclick="openGuide()"
+        style="background: #1c2433; border-color: #2d3d55; color: #7ea6f0"
+      >
+        View Full Plane Transformation Guide
+      </button>
+    </div>
 
     <div class="results-grid" id="resGrid" style="display: none">
       <div class="rcard">
@@ -530,9 +539,19 @@
         const snA = stressNormal(tA);
         const snB = stressNormal(tB);
 
-        const theta1raw = Math.abs(snA - S1) < Math.abs(snB - S1) ? tA : tB;
-        THETA1 = theta1raw < 0 ? theta1raw + 180 : theta1raw;
-        THETAS = THETA1 - 45;
+        // const theta1raw = Math.abs(snA - S1) < Math.abs(snB - S1) ? tA : tB;
+        // THETA1 = theta1raw < 0 ? theta1raw + 180 : theta1raw;
+        // THETAS = THETA1 - 45;
+
+        // Keep THETA1 as the SIGNED smallest-angle rotation needed to reach the σ₁ face.
+        // Positive => counter-clockwise from x-axis. Negative => clockwise.
+        // (Do NOT normalize into 0..180 — that destroys the rotation-direction
+        // information and makes the animation rotate the wrong way.)
+        THETA1 = Math.abs(snA - S1) < Math.abs(snB - S1) ? tA : tB;
+        // θs is 45° away from θp on the side that keeps |angle| ≤ 90° (short rotation).
+        const tsA = THETA1 - 45;
+        const tsB = THETA1 + 45;
+        THETAS = Math.abs(tsA) <= Math.abs(tsB) ? tsA : tsB;
 
         document.getElementById("rs1").textContent = S1.toFixed(2) + " MPa";
         document.getElementById("rs1").className =
@@ -551,6 +570,19 @@
         document.getElementById("rthetaS").textContent =
           THETAS.toFixed(1) + "°";
 
+        // const shearTendency =
+        //   TXY > 0
+        //     ? "counter-clockwise (positive shear)"
+        //     : TXY < 0
+        //       ? "clockwise (negative shear)"
+        //       : "zero — no shear";
+
+        // notes = [
+        //   `<strong>Original state.</strong> σx = ${SX} MPa, σy = ${SY} MPa, τxy = ${TXY} MPa. Shear tendency on element: ${shearTendency}. All values as given in the problem.`,
+        //   `<strong>Principal stress element — rotated to ${THETA1.toFixed(1)}°.</strong> Shear is zero on all faces. σ₁ = ${S1.toFixed(2)} MPa and σ₂ = ${S2.toFixed(2)} MPa. No shear arrows on this element.`,
+        //   `<strong>Max shear element — rotated to ${THETAS.toFixed(1)}° (45° past principal).</strong> τ_max = ${RAD_R.toFixed(2)} MPa on all faces. Normal stress on every face = σ_avg = ${AVG.toFixed(2)} MPa.`,
+        // ];
+
         const shearTendency =
           TXY > 0
             ? "counter-clockwise (positive shear)"
@@ -558,10 +590,23 @@
               ? "clockwise (negative shear)"
               : "zero — no shear";
 
+        const dir1 =
+          THETA1 > 0
+            ? "counter-clockwise"
+            : THETA1 < 0
+              ? "clockwise"
+              : "no rotation";
+        const dirS =
+          THETAS > 0
+            ? "counter-clockwise"
+            : THETAS < 0
+              ? "clockwise"
+              : "no rotation";
+
         notes = [
           `<strong>Original state.</strong> σx = ${SX} MPa, σy = ${SY} MPa, τxy = ${TXY} MPa. Shear tendency on element: ${shearTendency}. All values as given in the problem.`,
-          `<strong>Principal stress element — rotated to ${THETA1.toFixed(1)}°.</strong> Shear is zero on all faces. σ₁ = ${S1.toFixed(2)} MPa and σ₂ = ${S2.toFixed(2)} MPa. No shear arrows on this element.`,
-          `<strong>Max shear element — rotated to ${THETAS.toFixed(1)}° (45° past principal).</strong> τ_max = ${RAD_R.toFixed(2)} MPa on all faces. Normal stress on every face = σ_avg = ${AVG.toFixed(2)} MPa.`,
+          `<strong>Principal stress element — rotated ${Math.abs(THETA1).toFixed(1)}° ${dir1} (θ = ${THETA1.toFixed(1)}°).</strong> Shear is zero on all faces. σ₁ = ${S1.toFixed(2)} MPa and σ₂ = ${S2.toFixed(2)} MPa. No shear arrows on this element.`,
+          `<strong>Max shear element — rotated ${Math.abs(THETAS).toFixed(1)}° ${dirS} (θ = ${THETAS.toFixed(1)}°, 45° from principal).</strong> τ_max = ${RAD_R.toFixed(2)} MPa on all faces. Normal stress on every face = σ_avg = ${AVG.toFixed(2)} MPa.`,
         ];
 
         document.getElementById("resGrid").style.display = "grid";
@@ -615,8 +660,16 @@
       }
 
       function draw(angle) {
+        // ctx.clearRect(0, 0, W, H);
+        // const rad = (angle * Math.PI) / 180;
+        // const cos = Math.cos(rad),
+        //   sin = Math.sin(rad);
+        // const hs = 70;
         ctx.clearRect(0, 0, W, H);
-        const rad = (angle * Math.PI) / 180;
+        // Negate so a positive math angle (CCW from +x toward +y, right-hand
+        // rule) actually appears CCW on screen. Canvas's native y-axis points
+        // down, so without this flip a positive angle would render clockwise.
+        const rad = -(angle * Math.PI) / 180;
         const cos = Math.cos(rad),
           sin = Math.sin(rad);
         const hs = 70;
@@ -736,9 +789,32 @@
         }
 
         // Rotation arc
+        // if (Math.abs(angle) > 0.5) {
+        //   ctx.beginPath();
+        //   ctx.arc(0, 0, 40, 0, -rad, rad > 0);
+        //   ctx.strokeStyle = "#5a5444";
+        //   ctx.lineWidth = 1.2;
+        //   ctx.setLineDash([3, 2]);
+        //   ctx.stroke();
+        //   ctx.setLineDash([]);
+        //   ctx.fillStyle = "#7a7060";
+        //   ctx.font = "11px Segoe UI,system-ui";
+        //   ctx.textAlign = "center";
+        //   ctx.textBaseline = "middle";
+        //   const ma = -rad / 2;
+        //   ctx.fillText(
+        //     angle.toFixed(1) + "°",
+        //     Math.cos(ma) * 56,
+        //     Math.sin(ma) * 56,
+        //   );
+        // }
+
+        // Rotation arc — sweep from +x to the rotated x'-axis the short way.
+        // `rad` already encodes the on-screen direction (negated above), so
+        // rad < 0 means we sweep clockwise on screen.
         if (Math.abs(angle) > 0.5) {
           ctx.beginPath();
-          ctx.arc(0, 0, 40, 0, -rad, rad > 0);
+          ctx.arc(0, 0, 40, 0, rad, rad < 0);
           ctx.strokeStyle = "#5a5444";
           ctx.lineWidth = 1.2;
           ctx.setLineDash([3, 2]);
@@ -748,13 +824,14 @@
           ctx.font = "11px Segoe UI,system-ui";
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
-          const ma = -rad / 2;
+          const ma = rad / 2;
           ctx.fillText(
             angle.toFixed(1) + "°",
             Math.cos(ma) * 56,
             Math.sin(ma) * 56,
           );
         }
+
 
         ctx.restore();
 
@@ -834,6 +911,15 @@
           content.style.maxHeight = content.scrollHeight + "px";
         }
       }
+
+      function openGuide() {
+        const sx = document.getElementById("isx").value;
+        const sy = document.getElementById("isy").value;
+        const txy = document.getElementById("itxy").value;
+
+        const url = `guide.html?sx=${encodeURIComponent(sx)}&sy=${encodeURIComponent(sy)}&txy=${encodeURIComponent(txy)}`;
+        window.open(url, "_blank");
+      }
     </script>
 
     <div class="accordion">
@@ -845,19 +931,24 @@
         <p>
           • Calculate σ₁ and σ₂ using principal stress equations.<br />
           • Compute θₚ from the tan(2θₚ) relation.<br />
-          • Verify orientation by substituting θₚ into the normal stress transformation equation.<br />
+          • Verify orientation by substituting θₚ into the normal stress
+          transformation equation.<br />
           • Draw the principal element at θₚ: normal stresses only, no shear.<br />
           • Rotate 45° from θₚ to obtain the maximum shear orientation.<br />
-          • Draw the max shear element: σ_avg on all faces, τ_max forming a pinwheel pattern.
+          • Draw the max shear element: σ_avg on all faces, τ_max forming a
+          pinwheel pattern.
         </p>
       </div>
     </div>
 
     <div class="footer">
-      © 2026 kay — Licensed under GPL-3.0  
+      © 2026 kay — Licensed under GPL-3.0
       <span class="sub">
-        This project is open-source. View source on 
-        <a href="https://github.com/kayspace/stress-element-analyser" target="_blank">
+        This project is open-source. View source on
+        <a
+          href="https://github.com/kayspace/stress-element-analyser"
+          target="_blank"
+        >
           GitHub
         </a>
       </span>
