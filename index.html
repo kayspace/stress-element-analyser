@@ -920,6 +920,21 @@
         const url = `guide.html?sx=${encodeURIComponent(sx)}&sy=${encodeURIComponent(sy)}&txy=${encodeURIComponent(txy)}`;
         window.open(url, "_blank");
       }
+
+      // Persist σx, σy, τxy across page refresh
+      (function persistInputs() {
+        const ids = ['isx', 'isy', 'itxy'];
+        ids.forEach(id => {
+          const el = document.getElementById(id);
+          if (!el) return;
+          const saved = localStorage.getItem('stress_' + id);
+          if (saved !== null && saved !== '') el.value = saved;
+          el.addEventListener('input', () => {
+            localStorage.setItem('stress_' + id, el.value);
+          });
+        });
+      })();
+
     </script>
 
     <div class="accordion">
