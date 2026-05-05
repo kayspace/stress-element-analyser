@@ -116,10 +116,20 @@ The canvas-based renderer displays:
 * Mobile UI optimization
 * Support for 3D stress states
 
-## License
+## Licensing
 
-This project is licensed under the GNU General Public License v3.0.
+This project uses dual licensing:
 
-You are free to use, modify, and distribute this software, provided that any derivative work is also distributed under the same license.
+### Code
+Licensed under GNU AGPL v3.0  
+→ Applies to all source code, rendering logic, and application behavior
 
-See the LICENSE file for full details.
+### Educational Content
+Licensed under CC BY-NC-SA 4.0  
+→ Applies to explanations, guide steps, and instructional material
+
+### What this means
+
+- You can use and modify the code, but must open-source changes if deployed
+- You can use the educational material for teaching and learning
+- You cannot sell or commercially reuse the educational content
