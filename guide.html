@@ -135,9 +135,16 @@ button.nav.back-btn:hover { background: #223344; }
 <script>
 // ── Read URL params ──────────────────────────────────────────────────────────
 const params = new URLSearchParams(window.location.search);
-const SX  = parseFloat(params.get('sx')  ?? '20');
-const SY  = parseFloat(params.get('sy')  ?? '10');
-const TXY = parseFloat(params.get('txy') ?? '10');
+
+// Fall back to last-used values from the homepage if URL params are missing
+function _lsGet(k, d) {
+  const v = localStorage.getItem(k);
+  return (v === null || v === '') ? d : v;
+}
+
+const SX  = parseFloat(params.get('sx')  ?? _lsGet('stress_isx',  '20'));
+const SY  = parseFloat(params.get('sy')  ?? _lsGet('stress_isy',  '10'));
+const TXY = parseFloat(params.get('txy') ?? _lsGet('stress_itxy', '10'));
 
 // ── Derived quantities ───────────────────────────────────────────────────────
 const AVG = (SX + SY) / 2;
