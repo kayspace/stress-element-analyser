@@ -832,7 +832,6 @@
           );
         }
 
-
         ctx.restore();
 
         const la = ((Math.round(angle) % 360) + 360) % 360;
@@ -923,18 +922,17 @@
 
       // Persist σx, σy, τxy across page refresh
       (function persistInputs() {
-        const ids = ['isx', 'isy', 'itxy'];
-        ids.forEach(id => {
+        const ids = ["isx", "isy", "itxy"];
+        ids.forEach((id) => {
           const el = document.getElementById(id);
           if (!el) return;
-          const saved = localStorage.getItem('stress_' + id);
-          if (saved !== null && saved !== '') el.value = saved;
-          el.addEventListener('input', () => {
-            localStorage.setItem('stress_' + id, el.value);
+          const saved = localStorage.getItem("stress_" + id);
+          if (saved !== null && saved !== "") el.value = saved;
+          el.addEventListener("input", () => {
+            localStorage.setItem("stress_" + id, el.value);
           });
         });
       })();
-
     </script>
 
     <div class="accordion">
