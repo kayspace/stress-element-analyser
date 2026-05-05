@@ -1,596 +1,931 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Plane Stress Transformation Guide</title>
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: #0f0f13; color: #e8e6e0; font-family: 'Segoe UI', system-ui, sans-serif; padding: 16px; min-height: 100vh; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plane Stress Transformation Guide</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: #0f0f13;
+        color: #e8e6e0;
+        font-family: "Segoe UI", system-ui, sans-serif;
+        padding: 16px;
+        min-height: 100vh;
+      }
 
-h1 { font-size: 16px; font-weight: 600; color: #c8c5bc; margin-bottom: 3px; }
-.prob { font-size: 12px; color: #6a6760; margin-bottom: 16px; line-height: 1.6; }
-.prob b { color: #a0ada6; }
+      h1 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #c8c5bc;
+        margin-bottom: 3px;
+      }
+      .prob {
+        font-size: 12px;
+        color: #6a6760;
+        margin-bottom: 16px;
+        line-height: 1.6;
+      }
+      .prob b {
+        color: #a0ada6;
+      }
 
-.steps-row {
-  display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 14px;
-  max-width: 860px; margin-left: auto; margin-right: auto;
-}
-.step-btn {
-  font-size: 11px; padding: 6px 11px; border-radius: 7px;
-  border: 1px solid #2e2d2a; background: #1a1917; color: #888;
-  cursor: pointer; font-family: inherit; transition: all 0.15s;
-}
-.step-btn:hover { background: #222; color: #c8c5bc; }
-.step-btn.active { background: #1c2d1c; color: #7ec87e; border-color: #3d5d3d; }
-.step-btn.done { color: #5a8a5a; border-color: #2d3d2d; }
-.step-btn .snum { display: block; font-size: 9px; color: #555; margin-bottom: 1px; }
+      .steps-row {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 14px;
+        max-width: 860px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .step-btn {
+        font-size: 11px;
+        padding: 6px 11px;
+        border-radius: 7px;
+        border: 1px solid #2e2d2a;
+        background: #1a1917;
+        color: #888;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.15s;
+      }
+      .step-btn:hover {
+        background: #222;
+        color: #c8c5bc;
+      }
+      .step-btn.active {
+        background: #1c2d1c;
+        color: #7ec87e;
+        border-color: #3d5d3d;
+      }
+      .step-btn.done {
+        color: #5a8a5a;
+        border-color: #2d3d2d;
+      }
+      .step-btn .snum {
+        display: block;
+        font-size: 9px;
+        color: #555;
+        margin-bottom: 1px;
+      }
 
-.main-area {
-  display: flex; gap: 14px; align-items: flex-start;
-  max-width: 860px; margin: 0 auto;
-}
-canvas {
-  display: block; border-radius: 10px; background: #141318;
-  border: 1px solid #222028; flex-shrink: 0;
-}
+      .main-area {
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        max-width: 860px;
+        margin: 0 auto;
+      }
+      canvas {
+        display: block;
+        border-radius: 10px;
+        background: #141318;
+        border: 1px solid #222028;
+        flex-shrink: 0;
+      }
 
-.panel { flex: 1; min-width: 220px; }
+      .panel {
+        flex: 1;
+        min-width: 220px;
+      }
 
-.explain-box {
-  background: #141318; border: 1px solid #222028; border-radius: 8px;
-  padding: 14px; margin-bottom: 10px; min-height: 120px;
-}
-.explain-title { font-size: 11px; font-weight: 600; color: #7ec87e; margin-bottom: 8px; letter-spacing: 0.05em; text-transform: uppercase; }
-.explain-body { font-size: 12.5px; color: #b0ada6; line-height: 1.75; }
-.explain-body b { color: #e0ddd8; }
-.explain-body .formula {
-  display: block; margin: 6px 0; background: #1a1917; border-radius: 5px;
-  padding: 5px 10px; font-family: monospace; font-size: 12px; color: #c8c5bc;
-  border-left: 2px solid #7ec87e;
-}
-.explain-body .warn {
-  color: #c9a84c; font-style: italic; display: block;
-  margin-top: 6px; font-size: 11.5px;
-}
+      .explain-box {
+        background: #141318;
+        border: 1px solid #222028;
+        border-radius: 8px;
+        padding: 14px;
+        margin-bottom: 10px;
+        min-height: 120px;
+      }
+      .explain-title {
+        font-size: 11px;
+        font-weight: 600;
+        color: #7ec87e;
+        margin-bottom: 8px;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+      .explain-body {
+        font-size: 12.5px;
+        color: #b0ada6;
+        line-height: 1.75;
+      }
+      .explain-body b {
+        color: #e0ddd8;
+      }
+      .explain-body .formula {
+        display: block;
+        margin: 6px 0;
+        background: #1a1917;
+        border-radius: 5px;
+        padding: 5px 10px;
+        font-family: monospace;
+        font-size: 12px;
+        color: #c8c5bc;
+        border-left: 2px solid #7ec87e;
+      }
+      .explain-body .warn {
+        color: #c9a84c;
+        font-style: italic;
+        display: block;
+        margin-top: 6px;
+        font-size: 11.5px;
+      }
 
-.values-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.val-card { background: #1a1917; border: 1px solid #252320; border-radius: 6px; padding: 7px 10px; }
-.val-label { font-size: 9px; color: #5a5752; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px; }
-.val-num { font-size: 14px; font-weight: 500; color: #c8c5bc; }
-.val-num.green { color: #7ec87e; }
-.val-num.amber { color: #c9a84c; }
+      .values-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+      }
+      .val-card {
+        background: #1a1917;
+        border: 1px solid #252320;
+        border-radius: 6px;
+        padding: 7px 10px;
+      }
+      .val-label {
+        font-size: 9px;
+        color: #5a5752;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 2px;
+      }
+      .val-num {
+        font-size: 14px;
+        font-weight: 500;
+        color: #c8c5bc;
+      }
+      .val-num.green {
+        color: #7ec87e;
+      }
+      .val-num.amber {
+        color: #c9a84c;
+      }
 
-.legend { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
-.li { display: flex; align-items: center; gap: 5px; font-size: 11px; color: #6a6760; }
-.ld { width: 16px; height: 3px; border-radius: 2px; }
+      .legend {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+      }
+      .li {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 11px;
+        color: #6a6760;
+      }
+      .ld {
+        width: 16px;
+        height: 3px;
+        border-radius: 2px;
+      }
 
-.nav-row {
-  display: flex; gap: 8px; justify-content: center; margin-top: 12px;
-  max-width: 860px; margin-left: auto; margin-right: auto;
-}
-button.nav {
-  font-size: 12px; padding: 8px 20px; border-radius: 7px;
-  border: 1px solid #2e2d2a; background: #1a1917; color: #b0ada6;
-  cursor: pointer; font-family: inherit; transition: all 0.15s;
-}
-button.nav:hover { background: #252320; }
-button.nav.primary { background: #1c2d1c; color: #7ec87e; border-color: #3d5d3d; }
-button.nav:disabled { opacity: 0.35; cursor: default; }
-button.nav.back-btn { background: #1c2433; color: #7ea6f0; border-color: #2d3d55; }
-button.nav.back-btn:hover { background: #223344; }
+      .nav-row {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        margin-top: 12px;
+        max-width: 860px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      button.nav {
+        font-size: 12px;
+        padding: 8px 20px;
+        border-radius: 7px;
+        border: 1px solid #2e2d2a;
+        background: #1a1917;
+        color: #b0ada6;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.15s;
+      }
+      button.nav:hover {
+        background: #252320;
+      }
+      button.nav.primary {
+        background: #1c2d1c;
+        color: #7ec87e;
+        border-color: #3d5d3d;
+      }
+      button.nav:disabled {
+        opacity: 0.35;
+        cursor: default;
+      }
+      button.nav.back-btn {
+        background: #1c2433;
+        color: #7ea6f0;
+        border-color: #2d3d55;
+      }
+      button.nav.back-btn:hover {
+        background: #223344;
+      }
 
-.progress-bar {
-  height: 3px; background: #1a1917; border-radius: 2px; margin-bottom: 14px;
-  max-width: 860px; margin-left: auto; margin-right: auto;
-}
-.progress-fill { height: 100%; background: #7ec87e; border-radius: 2px; transition: width 0.4s ease; }
+      .progress-bar {
+        height: 3px;
+        background: #1a1917;
+        border-radius: 2px;
+        margin-bottom: 14px;
+        max-width: 860px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+      .progress-fill {
+        height: 100%;
+        background: #7ec87e;
+        border-radius: 2px;
+        transition: width 0.4s ease;
+      }
 
-/* Step 8 summary panel overlay on canvas */
-.summary-overlay {
-  display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  pointer-events: none;
-}
-.canvas-wrap { position: relative; flex-shrink: 0; }
-</style>
-</head>
-<body>
+      /* Step 8 summary panel overlay on canvas */
+      .summary-overlay {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+      .canvas-wrap {
+        position: relative;
+        flex-shrink: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="pageTitle">Plane Stress Transformation — Step-by-Step Guide</h1>
+    <p class="prob" id="probLine">Loading values…</p>
 
-<h1 id="pageTitle">Plane Stress Transformation — Step-by-Step Guide</h1>
-<p class="prob" id="probLine">Loading values…</p>
-
-<div class="steps-row" id="stepBtns"></div>
-<div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
-
-<div class="main-area">
-  <div class="canvas-wrap">
-    <canvas id="cv" width="400" height="360"></canvas>
-  </div>
-  <div class="panel">
-    <div class="explain-box">
-      <div class="explain-title" id="exTitle">Step</div>
-      <div class="explain-body" id="exBody">—</div>
+    <div class="steps-row" id="stepBtns"></div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progFill"></div>
     </div>
-    <div class="values-grid">
-      <div class="val-card"><div class="val-label">Rotation angle</div><div class="val-num" id="iv-ang">0°</div></div>
-      <div class="val-card"><div class="val-label">σ on x' face</div><div class="val-num" id="iv-sn">—</div></div>
-      <div class="val-card"><div class="val-label">σ on y' face</div><div class="val-num" id="iv-sn2">—</div></div>
-      <div class="val-card"><div class="val-label">τ on faces</div><div class="val-num" id="iv-tau">—</div></div>
+
+    <div class="main-area">
+      <div class="canvas-wrap">
+        <canvas id="cv" width="400" height="360"></canvas>
+      </div>
+      <div class="panel">
+        <div class="explain-box">
+          <div class="explain-title" id="exTitle">Step</div>
+          <div class="explain-body" id="exBody">—</div>
+        </div>
+        <div class="values-grid">
+          <div class="val-card">
+            <div class="val-label">Rotation angle</div>
+            <div class="val-num" id="iv-ang">0°</div>
+          </div>
+          <div class="val-card">
+            <div class="val-label">σ on x' face</div>
+            <div class="val-num" id="iv-sn">—</div>
+          </div>
+          <div class="val-card">
+            <div class="val-label">σ on y' face</div>
+            <div class="val-num" id="iv-sn2">—</div>
+          </div>
+          <div class="val-card">
+            <div class="val-label">τ on faces</div>
+            <div class="val-num" id="iv-tau">—</div>
+          </div>
+        </div>
+        <div class="legend" style="margin-top: 10px">
+          <div class="li">
+            <div class="ld" style="background: #5aa8e0"></div>
+            Tension (outward)
+          </div>
+          <div class="li">
+            <div class="ld" style="background: #e06060"></div>
+            Compression (inward)
+          </div>
+          <div class="li">
+            <div class="ld" style="background: #c9a84c"></div>
+            Shear
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="legend" style="margin-top:10px">
-      <div class="li"><div class="ld" style="background:#5aa8e0"></div>Tension (outward)</div>
-      <div class="li"><div class="ld" style="background:#e06060"></div>Compression (inward)</div>
-      <div class="li"><div class="ld" style="background:#c9a84c"></div>Shear</div>
+
+    <div class="nav-row" style="margin-top: 12px">
+      <button class="nav back-btn" onclick="window.close()">
+        ← Back to Analyzer
+      </button>
+      <button class="nav" id="btnPrev" onclick="prev()">← Back</button>
+      <button class="nav primary" id="btnNext" onclick="next()">Next →</button>
+      <button class="nav" onclick="autoPlay()" id="btnAuto">▶ Auto-play</button>
     </div>
-  </div>
-</div>
 
-<div class="nav-row" style="margin-top:12px">
-  <button class="nav back-btn" onclick="window.close()">← Back to Analyzer</button>
-  <button class="nav" id="btnPrev" onclick="prev()">← Back</button>
-  <button class="nav primary" id="btnNext" onclick="next()">Next →</button>
-  <button class="nav" onclick="autoPlay()" id="btnAuto">▶ Auto-play</button>
-</div>
+    <script>
+      // ── Read URL params ──────────────────────────────────────────────────────────
+      const params = new URLSearchParams(window.location.search);
 
-<script>
-// ── Read URL params ──────────────────────────────────────────────────────────
-const params = new URLSearchParams(window.location.search);
+      // Fall back to last-used values from the homepage if URL params are missing
+      function _lsGet(k, d) {
+        const v = localStorage.getItem(k);
+        return v === null || v === "" ? d : v;
+      }
 
-// Fall back to last-used values from the homepage if URL params are missing
-function _lsGet(k, d) {
-  const v = localStorage.getItem(k);
-  return (v === null || v === '') ? d : v;
-}
+      const SX = parseFloat(params.get("sx") ?? _lsGet("stress_isx", "20"));
+      const SY = parseFloat(params.get("sy") ?? _lsGet("stress_isy", "10"));
+      const TXY = parseFloat(params.get("txy") ?? _lsGet("stress_itxy", "10"));
 
-const SX  = parseFloat(params.get('sx')  ?? _lsGet('stress_isx',  '20'));
-const SY  = parseFloat(params.get('sy')  ?? _lsGet('stress_isy',  '10'));
-const TXY = parseFloat(params.get('txy') ?? _lsGet('stress_itxy', '10'));
+      // ── Derived quantities ───────────────────────────────────────────────────────
+      const AVG = (SX + SY) / 2;
+      const R = Math.sqrt(((SX - SY) / 2) ** 2 + TXY ** 2);
+      const S1 = AVG + R;
+      const S2 = AVG - R;
 
-// ── Derived quantities ───────────────────────────────────────────────────────
-const AVG = (SX + SY) / 2;
-const R   = Math.sqrt(((SX - SY) / 2) ** 2 + TXY ** 2);
-const S1  = AVG + R;
-const S2  = AVG - R;
+      // θp raw (in degrees, can be any range)
+      const tpRaw = (0.5 * Math.atan2(2 * TXY, SX - SY) * 180) / Math.PI;
 
-// θp raw (in degrees, can be any range)
-const tpRaw = (0.5 * Math.atan2(2 * TXY, SX - SY) * 180) / Math.PI;
+      // Determine which candidate gives σ₁
+      function stressNormal(deg) {
+        const t = (deg * Math.PI) / 180;
+        return AVG + ((SX - SY) / 2) * Math.cos(2 * t) + TXY * Math.sin(2 * t);
+      }
 
-// Determine which candidate gives σ₁
-function stressNormal(deg) {
-  const t = deg * Math.PI / 180;
-  return AVG + ((SX - SY) / 2) * Math.cos(2 * t) + TXY * Math.sin(2 * t);
-}
+      const candA = tpRaw;
+      const candB = tpRaw + (tpRaw <= 0 ? 90 : -90);
+      const snA = stressNormal(candA);
+      const snB = stressNormal(candB);
 
-const candA = tpRaw;
-const candB = tpRaw + (tpRaw <= 0 ? 90 : -90);
-const snA = stressNormal(candA);
-const snB = stressNormal(candB);
+      // θp1 is the angle that yields σ₁. Keep it SIGNED in (-90°, 90°] — that
+      // preserves the rotation direction (positive = CCW from +x, negative = CW).
+      // Do NOT add 180° to negative angles: the resulting orientation is the same
+      // (square has 180° symmetry of opposite faces) but the animation would then
+      // take the long way around in the wrong direction.
+      const THETA1 = Math.abs(snA - S1) < Math.abs(snB - S1) ? candA : candB;
+      const THETA2 = THETA1 + (THETA1 <= 0 ? 90 : -90);
+      // θs is 45° from θp on whichever side keeps |θs| ≤ 90° (short rotation).
+      const _tsA = THETA1 - 45;
+      const _tsB = THETA1 + 45;
+      const THETAS = Math.abs(_tsA) <= Math.abs(_tsB) ? _tsA : _tsB;
 
-// θp1 is the angle that yields σ₁. Keep it SIGNED in (-90°, 90°] — that
-// preserves the rotation direction (positive = CCW from +x, negative = CW).
-// Do NOT add 180° to negative angles: the resulting orientation is the same
-// (square has 180° symmetry of opposite faces) but the animation would then
-// take the long way around in the wrong direction.
-const THETA1 = Math.abs(snA - S1) < Math.abs(snB - S1) ? candA : candB;
-const THETA2  = THETA1 + (THETA1 <= 0 ? 90 : -90);
-// θs is 45° from θp on whichever side keeps |θs| ≤ 90° (short rotation).
-const _tsA = THETA1 - 45;
-const _tsB = THETA1 + 45;
-const THETAS = Math.abs(_tsA) <= Math.abs(_tsB) ? _tsA : _tsB;
+      // Which candidate gives σ₂ (just for the label)
+      const THETA2_display = THETA1 >= 0 ? THETA1 - 90 : THETA1 + 90;
 
-// Which candidate gives σ₂ (just for the label)
-const THETA2_display = THETA1 >= 0 ? THETA1 - 90 : THETA1 + 90;
+      const shearTendency =
+        TXY > 0
+          ? "counter-clockwise (positive shear)"
+          : TXY < 0
+            ? "clockwise (negative shear)"
+            : "zero — no shear";
 
-const shearTendency = TXY > 0
-  ? 'counter-clockwise (positive shear)'
-  : TXY < 0
-    ? 'clockwise (negative shear)'
-    : 'zero — no shear';
+      const shearDir = TXY >= 0 ? "CCW" : "CW";
+      const shearDirOpp = TXY >= 0 ? "CW" : "CCW";
 
-const shearDir = TXY >= 0 ? 'CCW' : 'CW';
-const shearDirOpp = TXY >= 0 ? 'CW' : 'CCW';
+      // Labels
+      const rotDir1 = THETA1 >= 0 ? "counter-clockwise" : "clockwise";
+      const rotDir1S = THETA1 >= 0 ? "CCW" : "CW";
+      const rotDirS = THETAS >= 0 ? "counter-clockwise" : "clockwise";
+      const rotDirSS = THETAS >= 0 ? "CCW" : "CW";
 
-// Labels
-const rotDir1  = THETA1 >= 0 ? 'counter-clockwise' : 'clockwise';
-const rotDir1S = THETA1 >= 0 ? 'CCW' : 'CW';
-const rotDirS  = THETAS >= 0 ? 'counter-clockwise' : 'clockwise';
-const rotDirSS = THETAS >= 0 ? 'CCW' : 'CW';
+      // Populate header
+      document.getElementById("pageTitle").textContent =
+        "Plane Stress Transformation — Step-by-Step Guide";
+      document.getElementById("probLine").innerHTML =
+        `σx = <b>${SX} MPa</b>, σy = <b>${SY} MPa</b>, τxy = <b>${TXY} MPa</b> &nbsp;|&nbsp; ` +
+        `σ₁ = <b>${S1.toFixed(3)} MPa</b>, σ₂ = <b>${S2.toFixed(3)} MPa</b>, ` +
+        `θp1 = <b>${THETA1.toFixed(3)}°</b>, θs1 = <b>${THETAS.toFixed(3)}°</b>`;
 
-// Populate header
-document.getElementById('pageTitle').textContent =
-  'Plane Stress Transformation — Step-by-Step Guide';
-document.getElementById('probLine').innerHTML =
-  `σx = <b>${SX} MPa</b>, σy = <b>${SY} MPa</b>, τxy = <b>${TXY} MPa</b> &nbsp;|&nbsp; ` +
-  `σ₁ = <b>${S1.toFixed(3)} MPa</b>, σ₂ = <b>${S2.toFixed(3)} MPa</b>, ` +
-  `θp1 = <b>${THETA1.toFixed(3)}°</b>, θs1 = <b>${THETAS.toFixed(3)}°</b>`;
+      // ── Canvas setup ─────────────────────────────────────────────────────────────
+      const cv = document.getElementById("cv");
+      const ctx = cv.getContext("2d");
+      const W = 400,
+        H = 360,
+        CX = 200,
+        CY = 185;
 
-// ── Canvas setup ─────────────────────────────────────────────────────────────
-const cv  = document.getElementById('cv');
-const ctx = cv.getContext('2d');
-const W = 400, H = 360, CX = 200, CY = 185;
+      let curAngle = 0,
+        animId = null,
+        autoT = null,
+        step = 0;
 
-let curAngle = 0, animId = null, autoT = null, step = 0;
+      // ── Stress transformation ─────────────────────────────────────────────────────
+      function stressAt(deg) {
+        const t = (deg * Math.PI) / 180;
+        return {
+          sn: AVG + ((SX - SY) / 2) * Math.cos(2 * t) + TXY * Math.sin(2 * t),
+          sn2: AVG - ((SX - SY) / 2) * Math.cos(2 * t) - TXY * Math.sin(2 * t),
+          tn: -((SX - SY) / 2) * Math.sin(2 * t) + TXY * Math.cos(2 * t),
+        };
+      }
 
-// ── Stress transformation ─────────────────────────────────────────────────────
-function stressAt(deg) {
-  const t = deg * Math.PI / 180;
-  return {
-    sn:  AVG + ((SX - SY) / 2) * Math.cos(2 * t) + TXY * Math.sin(2 * t),
-    sn2: AVG - ((SX - SY) / 2) * Math.cos(2 * t) - TXY * Math.sin(2 * t),
-    tn:  -((SX - SY) / 2) * Math.sin(2 * t) + TXY * Math.cos(2 * t),
-  };
-}
+      // ── Arrow helper ──────────────────────────────────────────────────────────────
+      function arrowFn(x1, y1, x2, y2, col, w) {
+        w = w || 2;
+        const dx = x2 - x1,
+          dy = y2 - y1,
+          len = Math.sqrt(dx * dx + dy * dy);
+        if (len < 3) return;
+        const ux = dx / len,
+          uy = dy / len;
+        ctx.save();
+        ctx.strokeStyle = col;
+        ctx.fillStyle = col;
+        ctx.lineWidth = w;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2 - ux * 9, y2 - uy * 9);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x2, y2);
+        ctx.lineTo(x2 - ux * 9 - uy * 5, y2 - uy * 9 + ux * 5);
+        ctx.lineTo(x2 - ux * 9 + uy * 5, y2 - uy * 9 - ux * 5);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
 
-// ── Arrow helper ──────────────────────────────────────────────────────────────
-function arrowFn(x1, y1, x2, y2, col, w) {
-  w = w || 2;
-  const dx = x2 - x1, dy = y2 - y1, len = Math.sqrt(dx * dx + dy * dy);
-  if (len < 3) return;
-  const ux = dx / len, uy = dy / len;
-  ctx.save();
-  ctx.strokeStyle = col; ctx.fillStyle = col; ctx.lineWidth = w; ctx.lineCap = 'round';
-  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2 - ux * 9, y2 - uy * 9); ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(x2, y2);
-  ctx.lineTo(x2 - ux * 9 - uy * 5, y2 - uy * 9 + ux * 5);
-  ctx.lineTo(x2 - ux * 9 + uy * 5, y2 - uy * 9 - ux * 5);
-  ctx.closePath(); ctx.fill(); ctx.restore();
-}
+      // ── Draw ──────────────────────────────────────────────────────────────────────
+      function draw(angle, opts) {
+        opts = opts || {};
+        ctx.clearRect(0, 0, W, H);
+        // Negate so positive math angle (CCW per right-hand rule) renders CCW on
+        // screen. Canvas y-axis points down natively, so without this flip a
+        // positive angle would appear clockwise.
+        const rad = (-angle * Math.PI) / 180;
+        const cos = Math.cos(rad),
+          sin = Math.sin(rad);
+        const hs = 62;
+        const st = stressAt(angle);
 
-// ── Draw ──────────────────────────────────────────────────────────────────────
-function draw(angle, opts) {
-  opts = opts || {};
-  ctx.clearRect(0, 0, W, H);
-  // Negate so positive math angle (CCW per right-hand rule) renders CCW on
-  // screen. Canvas y-axis points down natively, so without this flip a
-  // positive angle would appear clockwise.
-  const rad = -angle * Math.PI / 180;
-  const cos = Math.cos(rad), sin = Math.sin(rad);
-  const hs = 62;
-  const st = stressAt(angle);
+        // Scale for arrows — use max of all relevant stresses
+        const maxStress = Math.max(
+          Math.abs(SX),
+          Math.abs(SY),
+          Math.abs(S1),
+          Math.abs(S2),
+          1,
+        );
 
-  // Scale for arrows — use max of all relevant stresses
-  const maxStress = Math.max(Math.abs(SX), Math.abs(SY), Math.abs(S1), Math.abs(S2), 1);
+        // Axes
+        ctx.strokeStyle = "#2a2a35";
+        ctx.lineWidth = 0.8;
+        ctx.setLineDash([5, 4]);
+        ctx.beginPath();
+        ctx.moveTo(40, CY);
+        ctx.lineTo(W - 30, CY);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(CX, 30);
+        ctx.lineTo(CX, H - 30);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = "#3a3a45";
+        ctx.font = "12px Segoe UI,system-ui";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "middle";
+        ctx.fillText("x", W - 25, CY);
+        ctx.textAlign = "center";
+        ctx.textBaseline = "top";
+        ctx.fillText("y", CX, 33);
 
-  // Axes
-  ctx.strokeStyle = '#2a2a35'; ctx.lineWidth = 0.8; ctx.setLineDash([5, 4]);
-  ctx.beginPath(); ctx.moveTo(40, CY); ctx.lineTo(W - 30, CY); ctx.stroke();
-  ctx.beginPath(); ctx.moveTo(CX, 30); ctx.lineTo(CX, H - 30); ctx.stroke();
-  ctx.setLineDash([]);
-  ctx.fillStyle = '#3a3a45'; ctx.font = '12px Segoe UI,system-ui';
-  ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText('x', W - 25, CY);
-  ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText('y', CX, 33);
+        // Ghost original element reference (dashed square)
+        if (Math.abs(angle) > 0.5) {
+          ctx.beginPath();
+          ctx.moveTo(CX + hs, CY + hs);
+          ctx.lineTo(CX - hs, CY + hs);
+          ctx.lineTo(CX - hs, CY - hs);
+          ctx.lineTo(CX + hs, CY - hs);
+          ctx.closePath();
+          ctx.strokeStyle = "#2a2a38";
+          ctx.lineWidth = 1;
+          ctx.setLineDash([4, 4]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.beginPath();
+          ctx.arc(CX + hs, CY - hs, 3.5, 0, Math.PI * 2);
+          ctx.fillStyle = "#383840";
+          ctx.fill();
+          ctx.fillStyle = "#484850";
+          ctx.font = "9px Segoe UI";
+          ctx.textAlign = "left";
+          ctx.fillText("original", CX + hs + 6, CY - hs + 3);
+        }
 
-  // Ghost original element reference (dashed square)
-  if (Math.abs(angle) > 0.5) {
-    ctx.beginPath();
-    ctx.moveTo(CX + hs, CY + hs); ctx.lineTo(CX - hs, CY + hs);
-    ctx.lineTo(CX - hs, CY - hs); ctx.lineTo(CX + hs, CY - hs); ctx.closePath();
-    ctx.strokeStyle = '#2a2a38'; ctx.lineWidth = 1; ctx.setLineDash([4, 4]); ctx.stroke(); ctx.setLineDash([]);
-    ctx.beginPath(); ctx.arc(CX + hs, CY - hs, 3.5, 0, Math.PI * 2);
-    ctx.fillStyle = '#383840'; ctx.fill();
-    ctx.fillStyle = '#484850'; ctx.font = '9px Segoe UI';
-    ctx.textAlign = 'left'; ctx.fillText('original', CX + hs + 6, CY - hs + 3);
-  }
+        // Element box (rotated)
+        const corners = [
+          [hs * cos - hs * sin, hs * sin + hs * cos],
+          [-hs * cos - hs * sin, -hs * sin + hs * cos],
+          [-hs * cos + hs * sin, -hs * sin - hs * cos],
+          [hs * cos + hs * sin, hs * sin - hs * cos],
+        ];
+        ctx.beginPath();
+        ctx.moveTo(CX + corners[0][0], CY + corners[0][1]);
+        for (let i = 1; i < 4; i++)
+          ctx.lineTo(CX + corners[i][0], CY + corners[i][1]);
+        ctx.closePath();
+        ctx.fillStyle = "#1c1b20";
+        ctx.fill();
+        ctx.strokeStyle = "#3a3850";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
 
-  // Element box (rotated)
-  const corners = [
-    [ hs * cos - hs * sin,  hs * sin + hs * cos],
-    [-hs * cos - hs * sin, -hs * sin + hs * cos],
-    [-hs * cos + hs * sin, -hs * sin - hs * cos],
-    [ hs * cos + hs * sin,  hs * sin - hs * cos],
-  ];
-  ctx.beginPath();
-  ctx.moveTo(CX + corners[0][0], CY + corners[0][1]);
-  for (let i = 1; i < 4; i++) ctx.lineTo(CX + corners[i][0], CY + corners[i][1]);
-  ctx.closePath();
-  ctx.fillStyle = '#1c1b20'; ctx.fill();
-  ctx.strokeStyle = '#3a3850'; ctx.lineWidth = 1.5; ctx.stroke();
+        // Tracking corner: top-right of original = (+hs, -hs) → rotated
+        const tkx = CX + hs * (cos + sin);
+        const tky = CY + hs * (sin - cos);
 
-  // Tracking corner: top-right of original = (+hs, -hs) → rotated
-  const tkx = CX + hs * (cos + sin);
-  const tky = CY + hs * (sin - cos);
+        // Arc trail — traces the path of the tracked corner on screen.
+        // Corner starts at canvas-angle -π/4 (top-right). After rotation, it sits at
+        // canvas-angle (origA + rad), because `rad` is already the screen-space
+        // rotation (negated above so positive math angle → CCW on screen).
+        if (Math.abs(angle) > 0.5) {
+          const cornerR = hs * Math.sqrt(2);
+          const origA = -Math.PI / 4;
+          const currA = origA + rad;
+          ctx.beginPath();
+          // anticlockwise=true sweeps in the negative canvas-angle direction
+          ctx.arc(CX, CY, cornerR, origA, currA, rad < 0);
+          ctx.strokeStyle = "#5a9e5a";
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([3, 2]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
 
-  // Arc trail — traces the path of the tracked corner on screen.
-  // Corner starts at canvas-angle -π/4 (top-right). After rotation, it sits at
-  // canvas-angle (origA + rad), because `rad` is already the screen-space
-  // rotation (negated above so positive math angle → CCW on screen).
-  if (Math.abs(angle) > 0.5) {
-    const cornerR = hs * Math.sqrt(2);
-    const origA = -Math.PI / 4;
-    const currA = origA + rad;
-    ctx.beginPath();
-    // anticlockwise=true sweeps in the negative canvas-angle direction
-    ctx.arc(CX, CY, cornerR, origA, currA, rad < 0);
-    ctx.strokeStyle = '#5a9e5a'; ctx.lineWidth = 1.5; ctx.setLineDash([3, 2]); ctx.stroke(); ctx.setLineDash([]);
-  }
+        // Glowing dot on tracked corner
+        ctx.beginPath();
+        ctx.arc(tkx, tky, 6, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(126,200,126,0.18)";
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(tkx, tky, 4, 0, Math.PI * 2);
+        ctx.fillStyle = "#7ec87e";
+        ctx.fill();
 
-  // Glowing dot on tracked corner
-  ctx.beginPath(); ctx.arc(tkx, tky, 6, 0, Math.PI * 2);
-  ctx.fillStyle = 'rgba(126,200,126,0.18)'; ctx.fill();
-  ctx.beginPath(); ctx.arc(tkx, tky, 4, 0, Math.PI * 2);
-  ctx.fillStyle = '#7ec87e'; ctx.fill();
+        // Label at step 0 only
+        if (Math.abs(angle) < 0.5) {
+          ctx.fillStyle = "#7ec87e";
+          ctx.font = "bold 9px Segoe UI";
+          ctx.textAlign = "right";
+          ctx.textBaseline = "middle";
+          ctx.fillText("watch this corner", CX + hs - 4, CY - hs - 12);
+          ctx.beginPath();
+          ctx.arc(CX + hs, CY - hs, 2, 0, Math.PI * 2);
+          ctx.fillStyle = "#7ec87e";
+          ctx.fill();
+        }
 
-  // Label at step 0 only
-  if (Math.abs(angle) < 0.5) {
-    ctx.fillStyle = '#7ec87e'; ctx.font = 'bold 9px Segoe UI';
-    ctx.textAlign = 'right'; ctx.textBaseline = 'middle';
-    ctx.fillText('watch this corner', CX + hs - 4, CY - hs - 12);
-    ctx.beginPath(); ctx.arc(CX + hs, CY - hs, 2, 0, Math.PI * 2);
-    ctx.fillStyle = '#7ec87e'; ctx.fill();
-  }
+        // Face center vectors
+        const fRx = cos * hs,
+          fRy = sin * hs;
+        const fTx = -sin * hs,
+          fTy = cos * hs;
 
-  // Face center vectors
-  const fRx = cos * hs, fRy = sin * hs;
-  const fTx = -sin * hs, fTy = cos * hs;
+        // Normal arrows — offset from face edge, not center
+        const NORM_OFFSET = 14; // px gap between arrow tail and face edge
 
-  // Normal arrows — offset from face edge, not center
-  const NORM_OFFSET = 14; // px gap between arrow tail and face edge
+        function normArrow(fx, fy, nx, ny, val) {
+          const col = val >= 0 ? "#5aa8e0" : "#e06060";
+          const base = 14,
+            scale = 50;
+          const mag = base + Math.min(Math.abs(val) / maxStress, 1) * scale;
+          // tail starts NORM_OFFSET outside the face
+          const tx = fx + nx * NORM_OFFSET;
+          const ty = fy + ny * NORM_OFFSET;
+          if (val >= 0) {
+            arrowFn(
+              CX + tx,
+              CY + ty,
+              CX + fx + nx * (mag + NORM_OFFSET),
+              CY + fy + ny * (mag + NORM_OFFSET),
+              col,
+              2.2,
+            );
+            arrowFn(
+              CX - tx,
+              CY - ty,
+              CX - fx - nx * (mag + NORM_OFFSET),
+              CY - fy - ny * (mag + NORM_OFFSET),
+              col,
+              2.2,
+            );
+          } else {
+            arrowFn(
+              CX + fx + nx * (mag + NORM_OFFSET),
+              CY + fy + ny * (mag + NORM_OFFSET),
+              CX + tx,
+              CY + ty,
+              col,
+              2.2,
+            );
+            arrowFn(
+              CX - fx - nx * (mag + NORM_OFFSET),
+              CY - fy - ny * (mag + NORM_OFFSET),
+              CX - tx,
+              CY - ty,
+              col,
+              2.2,
+            );
+          }
+        }
+        normArrow(fRx, fRy, cos, sin, st.sn);
+        normArrow(fTx, fTy, -sin, cos, st.sn2);
 
-  function normArrow(fx, fy, nx, ny, val) {
-    const col = val >= 0 ? '#5aa8e0' : '#e06060';
-    const base = 14, scale = 50;
-    const mag = base + Math.min(Math.abs(val) / maxStress, 1) * scale;
-    // tail starts NORM_OFFSET outside the face
-    const tx = fx + nx * NORM_OFFSET;
-    const ty = fy + ny * NORM_OFFSET;
-    if (val >= 0) {
-      arrowFn(CX + tx, CY + ty, CX + fx + nx * (mag + NORM_OFFSET), CY + fy + ny * (mag + NORM_OFFSET), col, 2.2);
-      arrowFn(CX - tx, CY - ty, CX - fx - nx * (mag + NORM_OFFSET), CY - fy - ny * (mag + NORM_OFFSET), col, 2.2);
-    } else {
-      arrowFn(CX + fx + nx * (mag + NORM_OFFSET), CY + fy + ny * (mag + NORM_OFFSET), CX + tx, CY + ty, col, 2.2);
-      arrowFn(CX - fx - nx * (mag + NORM_OFFSET), CY - fy - ny * (mag + NORM_OFFSET), CX - tx, CY - ty, col, 2.2);
-    }
-  }
-  normArrow(fRx, fRy, cos, sin, st.sn);
-  normArrow(fTx, fTy, -sin, cos, st.sn2);
+        // Shear arrows — offset so they don't overlap normal arrows
+        const SHEAR_OFFSET = 22; // along face, from face center
+        if (Math.abs(st.tn) > 0.3) {
+          const d = st.tn > 0 ? 1 : -1;
+          // On right/left faces: shear acts along face (perpendicular to normal)
+          // Offset arrow start/end so it doesn't sit at exact face center
+          const sOff = SHEAR_OFFSET;
+          // Right face
+          arrowFn(
+            CX + fRx - sin * d * sOff,
+            CY + fRy + cos * d * sOff,
+            CX + fRx + sin * d * sOff,
+            CY + fRy - cos * d * sOff,
+            "#c9a84c",
+            1.8,
+          );
+          // Left face
+          arrowFn(
+            CX - fRx + sin * d * sOff,
+            CY - fRy - cos * d * sOff,
+            CX - fRx - sin * d * sOff,
+            CY - fRy + cos * d * sOff,
+            "#c9a84c",
+            1.8,
+          );
+          // Top face
+          arrowFn(
+            CX + fTx + cos * d * sOff,
+            CY + fTy + sin * d * sOff,
+            CX + fTx - cos * d * sOff,
+            CY + fTy - sin * d * sOff,
+            "#c9a84c",
+            1.8,
+          );
+          // Bottom face
+          arrowFn(
+            CX - fTx - cos * d * sOff,
+            CY - fTy - sin * d * sOff,
+            CX - fTx + cos * d * sOff,
+            CY - fTy + sin * d * sOff,
+            "#c9a84c",
+            1.8,
+          );
+        }
 
-  // Shear arrows — offset so they don't overlap normal arrows
-  const SHEAR_OFFSET = 22; // along face, from face center
-  if (Math.abs(st.tn) > 0.3) {
-    const d = st.tn > 0 ? 1 : -1;
-    // On right/left faces: shear acts along face (perpendicular to normal)
-    // Offset arrow start/end so it doesn't sit at exact face center
-    const sOff = SHEAR_OFFSET;
-    // Right face
-    arrowFn(CX + fRx - sin * d * sOff, CY + fRy + cos * d * sOff,
-            CX + fRx + sin * d * sOff, CY + fRy - cos * d * sOff, '#c9a84c', 1.8);
-    // Left face
-    arrowFn(CX - fRx + sin * d * sOff, CY - fRy - cos * d * sOff,
-            CX - fRx - sin * d * sOff, CY - fRy + cos * d * sOff, '#c9a84c', 1.8);
-    // Top face
-    arrowFn(CX + fTx + cos * d * sOff, CY + fTy + sin * d * sOff,
-            CX + fTx - cos * d * sOff, CY + fTy - sin * d * sOff, '#c9a84c', 1.8);
-    // Bottom face
-    arrowFn(CX - fTx - cos * d * sOff, CY - fTy - sin * d * sOff,
-            CX - fTx + cos * d * sOff, CY - fTy + sin * d * sOff, '#c9a84c', 1.8);
-  }
+        // Rotation arc label — sweep from +x to the rotated x'-axis the short way.
+        // The new x'-axis sits at canvas-angle `rad` (already screen-CCW).
+        if (Math.abs(angle) > 0.5) {
+          ctx.beginPath();
+          ctx.arc(CX, CY, 38, 0, rad, rad < 0);
+          ctx.strokeStyle = "#5a5444";
+          ctx.lineWidth = 1;
+          ctx.setLineDash([3, 2]);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.fillStyle = "#7a7060";
+          ctx.font = "10px Segoe UI,system-ui";
+          ctx.textAlign = "center";
+          const ma = rad / 2;
+          ctx.fillText(
+            angle.toFixed(1) + "°",
+            CX + Math.cos(ma) * 54,
+            CY + Math.sin(ma) * 54 - 4,
+          );
+        }
 
-  // Rotation arc label — sweep from +x to the rotated x'-axis the short way.
-  // The new x'-axis sits at canvas-angle `rad` (already screen-CCW).
-  if (Math.abs(angle) > 0.5) {
-    ctx.beginPath();
-    ctx.arc(CX, CY, 38, 0, rad, rad < 0);
-    ctx.strokeStyle = '#5a5444'; ctx.lineWidth = 1; ctx.setLineDash([3, 2]); ctx.stroke(); ctx.setLineDash([]);
-    ctx.fillStyle = '#7a7060'; ctx.font = '10px Segoe UI,system-ui'; ctx.textAlign = 'center';
-    const ma = rad / 2;
-    ctx.fillText(angle.toFixed(1) + '°', CX + Math.cos(ma) * 54, CY + Math.sin(ma) * 54 - 4);
-  }
+        // Stress value labels on faces (only when animation is settled)
+        // Stress value labels on faces (only when animation is settled)
+        if (Math.abs(curAngle - angle) < 1 && !opts.skipLabels) {
+          ctx.font = "bold 11px Segoe UI,system-ui";
+          ctx.textBaseline = "middle";
+          ctx.textAlign = "center";
 
-  // Stress value labels on faces (only when animation is settled)
-    // Stress value labels on faces (only when animation is settled)
-  if (Math.abs(curAngle - angle) < 1 && !opts.skipLabels) {
-    ctx.font = 'bold 11px Segoe UI,system-ui';
-    ctx.textBaseline = 'middle';
-    ctx.textAlign = 'center';
+          // Push labels well beyond the arrow tips, then nudge perpendicular
+          // to the arrow shaft so the number sits to the side of the arrow.
+          const loff = 108; // distance from center (arrows end ~95)
+          const perp = 17; // sideways offset off the arrow line
 
-    // Push labels well beyond the arrow tips, then nudge perpendicular
-    // to the arrow shaft so the number sits to the side of the arrow.
-    const loff = 108;          // distance from center (arrows end ~95)
-    const perp = 17;           // sideways offset off the arrow line
+          // x' face label — perpendicular direction is (-sin, cos)
+          const lx = CX + cos * loff + -sin * perp;
+          const ly = CY + sin * loff + cos * perp;
+          ctx.fillStyle = "#5aa8e0";
+          ctx.fillText(st.sn.toFixed(1), lx, ly);
 
-    // x' face label — perpendicular direction is (-sin, cos)
-    const lx  = CX + cos * loff + (-sin) * perp;
-    const ly  = CY + sin * loff + ( cos) * perp;
-    ctx.fillStyle = '#5aa8e0';
-    ctx.fillText(st.sn.toFixed(1), lx, ly);
+          // y' face label — perpendicular direction is (cos, sin)
+          const lx2 = CX - sin * loff + cos * perp;
+          const ly2 = CY + cos * loff + sin * perp;
+          ctx.fillText(st.sn2.toFixed(1), lx2, ly2);
+        }
 
-    // y' face label — perpendicular direction is (cos, sin)
-    const lx2 = CX - sin * loff + (cos) * perp;
-    const ly2 = CY + cos * loff + (sin) * perp;
-    ctx.fillText(st.sn2.toFixed(1), lx2, ly2);
-  }
+        // Update value cards
+        document.getElementById("iv-ang").textContent = angle.toFixed(2) + "°";
+        document.getElementById("iv-sn").textContent = st.sn.toFixed(3);
+        document.getElementById("iv-sn2").textContent = st.sn2.toFixed(3);
+        document.getElementById("iv-tau").textContent = st.tn.toFixed(3);
+        document.getElementById("iv-tau").className =
+          "val-num " + (Math.abs(st.tn) < 0.01 ? "green" : "amber");
+      }
 
+      // ── Step definitions (dynamic) ───────────────────────────────────────────────
+      function buildSteps() {
+        const tauSign = TXY > 0 ? "+" : "";
 
-  // Update value cards
-  document.getElementById('iv-ang').textContent = angle.toFixed(2) + '°';
-  document.getElementById('iv-sn').textContent  = st.sn.toFixed(3);
-  document.getElementById('iv-sn2').textContent = st.sn2.toFixed(3);
-  document.getElementById('iv-tau').textContent = st.tn.toFixed(3);
-  document.getElementById('iv-tau').className =
-    'val-num ' + (Math.abs(st.tn) < 0.01 ? 'green' : 'amber');
-}
+        // θp1 check: substitute into formula
+        const t1r = (THETA1 * Math.PI) / 180;
+        const checkVal =
+          AVG + ((SX - SY) / 2) * Math.cos(2 * t1r) + TXY * Math.sin(2 * t1r);
 
-// ── Step definitions (dynamic) ───────────────────────────────────────────────
-function buildSteps() {
-  const tauSign = TXY > 0 ? '+' : '';
+        // Shear at θs direction
+        const tsVal = stressAt(THETAS).tn;
+        const maxShearPinwheel =
+          tsVal > 0 ? "CCW (positive τ)" : "CW (negative τ)";
 
-  // θp1 check: substitute into formula
-  const t1r = THETA1 * Math.PI / 180;
-  const checkVal = AVG + ((SX - SY) / 2) * Math.cos(2 * t1r) + TXY * Math.sin(2 * t1r);
+        // Step 8 final summary labels
+        const elem1RotDir = THETA1 >= 0 ? "CCW" : "CW";
+        const elem2RotDir = THETAS >= 0 ? "CCW" : "CW";
+        const elem2Label =
+          Math.abs(THETAS) >= 0 ? Math.abs(THETAS).toFixed(3) + "°" : "0°";
 
-  // Shear at θs direction
-  const tsVal = stressAt(THETAS).tn;
-  const maxShearPinwheel = tsVal > 0 ? 'CCW (positive τ)' : 'CW (negative τ)';
-
-  // Step 8 final summary labels
-  const elem1RotDir = THETA1 >= 0 ? 'CCW' : 'CW';
-  const elem2RotDir = THETAS >= 0 ? 'CCW' : 'CW';
-  const elem2Label  = Math.abs(THETAS) >= 0 ? Math.abs(THETAS).toFixed(3) + '°' : '0°';
-
-  return [
-    {
-      angle: 0,
-      title: 'Step 1 — Original element (given state)',
-      body: `This is what the problem gives you. Draw a square aligned with x–y axes.<br><br>
-<b>Right/Left faces</b> carry σx = ${SX} MPa ${SX >= 0 ? '(tension → arrows outward)' : '(compression → arrows inward)'}.<br>
-<b>Top/Bottom faces</b> carry σy = ${SY} MPa ${SY >= 0 ? '(tension → arrows outward)' : '(compression → arrows inward)'}.<br>
-<b>All four faces</b> carry τxy = ${TXY} MPa shear. Since τxy is <b>${TXY >= 0 ? 'positive' : 'negative'}</b>, the shear on the +x face acts in the <b>${TXY >= 0 ? '+y direction → CCW tendency' : '−y direction → CW tendency'}</b>.<br><br>
-🟢 <b>Watch the green dot on the top-right corner.</b> When rotating, follow that dot — it moves ${TXY >= 0 ? 'counter-clockwise' : 'clockwise'} per our sign convention.
-<span class="warn">This is your starting point — draw this first.</span>`
-    },
-    {
-      angle: 0,
-      title: 'Step 2 — Compute the key numbers',
-      body: `Before rotating, calculate everything you need:
+        return [
+          {
+            angle: 0,
+            title: "Step 1 — Original element (given state)",
+            body: `This is what the problem gives you. Draw a square aligned with x–y axes.<br><br>
+<b>Right/Left faces</b> carry σx = ${SX} MPa ${SX >= 0 ? "(tension → arrows outward)" : "(compression → arrows inward)"}.<br>
+<b>Top/Bottom faces</b> carry σy = ${SY} MPa ${SY >= 0 ? "(tension → arrows outward)" : "(compression → arrows inward)"}.<br>
+<b>All four faces</b> carry τxy = ${TXY} MPa shear. Since τxy is <b>${TXY >= 0 ? "positive" : "negative"}</b>, the shear on the +x face acts in the <b>${TXY >= 0 ? "+y direction → CCW tendency" : "−y direction → CW tendency"}</b>.<br><br>
+🟢 <b>Watch the green dot on the top-right corner.</b> When rotating, follow that dot — it moves ${TXY >= 0 ? "counter-clockwise" : "clockwise"} per our sign convention.
+<span class="warn">This is your starting point — draw this first.</span>`,
+          },
+          {
+            angle: 0,
+            title: "Step 2 — Compute the key numbers",
+            body: `Before rotating, calculate everything you need:
 <span class="formula">σavg = (${SX} + ${SY}) / 2 = ${AVG.toFixed(3)} MPa</span>
-<span class="formula">R = √[((${SX}−${SY})/2)² + (${TXY})²] = √[${(((SX-SY)/2)**2).toFixed(3)} + ${(TXY**2).toFixed(3)}] = ${R.toFixed(3)} MPa</span>
+<span class="formula">R = √[((${SX}−${SY})/2)² + (${TXY})²] = √[${(((SX - SY) / 2) ** 2).toFixed(3)} + ${(TXY ** 2).toFixed(3)}] = ${R.toFixed(3)} MPa</span>
 <span class="formula">σ₁ = ${AVG.toFixed(3)} + ${R.toFixed(3)} = ${S1.toFixed(3)} MPa</span>
 <span class="formula">σ₂ = ${AVG.toFixed(3)} − ${R.toFixed(3)} = ${S2.toFixed(3)} MPa</span>
-<span class="formula">tan(2θp) = 2×(${TXY}) / (${SX}−${SY}) = ${(2*TXY/(SX-SY)).toFixed(4)}</span>
-<span class="formula">2θp = ${(2*tpRaw).toFixed(3)}° → θp = ${tpRaw.toFixed(3)}°</span>
-<b>${S1 >= 0 ? 'σ₁ is tensile' : 'σ₁ is compressive'}</b>, <b>${S2 >= 0 ? 'σ₂ is tensile' : 'σ₂ is compressive'}</b>.`
-    },
-    {
-      angle: 0,
-      title: 'Step 3 — Confirm which angle gives σ₁',
-      body: `Two candidates: θ = ${candA.toFixed(3)}° and θ = ${candB.toFixed(3)}°.<br><br>
+<span class="formula">tan(2θp) = 2×(${TXY}) / (${SX}−${SY}) = ${((2 * TXY) / (SX - SY)).toFixed(4)}</span>
+<span class="formula">2θp = ${(2 * tpRaw).toFixed(3)}° → θp = ${tpRaw.toFixed(3)}°</span>
+<b>${S1 >= 0 ? "σ₁ is tensile" : "σ₁ is compressive"}</b>, <b>${S2 >= 0 ? "σ₂ is tensile" : "σ₂ is compressive"}</b>.`,
+          },
+          {
+            angle: 0,
+            title: "Step 3 — Confirm which angle gives σ₁",
+            body: `Two candidates: θ = ${candA.toFixed(3)}° and θ = ${candB.toFixed(3)}°.<br><br>
 Substitute θ = ${candA.toFixed(3)}° into the normal stress formula:<br>
-<span class="formula">σn = ${AVG.toFixed(3)} + ${((SX-SY)/2).toFixed(3)}·cos(${(2*candA).toFixed(2)}°) + ${TXY}·sin(${(2*candA).toFixed(2)}°)</span>
-<span class="formula">   = ${snA.toFixed(3)} MPa ${Math.abs(snA - S1) < 0.01 ? '→ <b>this is σ₁ ✓</b>' : '→ this is σ₂'}</span>
+<span class="formula">σn = ${AVG.toFixed(3)} + ${((SX - SY) / 2).toFixed(3)}·cos(${(2 * candA).toFixed(2)}°) + ${TXY}·sin(${(2 * candA).toFixed(2)}°)</span>
+<span class="formula">   = ${snA.toFixed(3)} MPa ${Math.abs(snA - S1) < 0.01 ? "→ <b>this is σ₁ ✓</b>" : "→ this is σ₂"}</span>
 So <b>θp1 = ${THETA1.toFixed(3)}°</b> gives σ₁ (major principal).<br>
 And <b>θp2 = ${THETA2_display.toFixed(3)}°</b> gives σ₂ (minor principal).
-<span class="warn">Always verify — never assume which angle gives which stress.</span>`
-    },
-    {
-      angle: 0,
-      title: 'Step 4 — Why do we rotate?',
-      body: `The original element has shear on its faces — it is <b>not</b> aligned with the principal planes.<br><br>
+<span class="warn">Always verify — never assume which angle gives which stress.</span>`,
+          },
+          {
+            angle: 0,
+            title: "Step 4 — Why do we rotate?",
+            body: `The original element has shear on its faces — it is <b>not</b> aligned with the principal planes.<br><br>
 <b>Principal planes</b> are the unique planes where shear stress is zero. The element experiences only pure normal stress — no sliding.<br><br>
 To expose these planes we must <b>rotate the element by θp1 = ${THETA1.toFixed(3)}° ${rotDir1}</b> from the original x-axis.<br><br>
 Watch the next step — as the element rotates, the <b>shear arrows shrink to zero</b>.
-<span class="warn">Rotation is in-plane. ${rotDir1S} is positive per our convention.</span>`
-    },
-    {
-      angle: THETA1,
-      title: `Step 5 — Rotate to θp1 = ${THETA1.toFixed(3)}° → Principal element`,
-      body: `The element has rotated <b>${Math.abs(THETA1).toFixed(3)}° ${rotDir1}</b>.<br><br>
+<span class="warn">Rotation is in-plane. ${rotDir1S} is positive per our convention.</span>`,
+          },
+          {
+            angle: THETA1,
+            title: `Step 5 — Rotate to θp1 = ${THETA1.toFixed(3)}° → Principal element`,
+            body: `The element has rotated <b>${Math.abs(THETA1).toFixed(3)}° ${rotDir1}</b>.<br><br>
 Follow the <b>green dot</b> — it moved ${rotDir1} unambiguously. The dashed outline shows the original position.<br><br>
 <b>Shear arrows vanished</b> — that is the defining property of a principal plane.<br><br>
-• <b>σ₁ = ${S1.toFixed(3)} MPa</b> on the x' faces → arrows ${S1 >= 0 ? 'outward' : 'inward'}<br>
-• <b>σ₂ = ${S2.toFixed(3)} MPa</b> on the y' faces → arrows ${S2 >= 0 ? 'outward' : 'inward'}
-<span class="warn">Draw this element rotated at ${THETA1.toFixed(3)}° with no shear arrows.</span>`
-    },
-    {
-      angle: THETA1,
-      title: 'Step 6 — Where is θp2?',
-      body: `θp2 = θp1 + 90° = ${THETA1.toFixed(3)}° + 90° = ${(THETA1 + 90).toFixed(3)}°<br>(or equivalently ${THETA2_display.toFixed(3)}°).<br><br>
+• <b>σ₁ = ${S1.toFixed(3)} MPa</b> on the x' faces → arrows ${S1 >= 0 ? "outward" : "inward"}<br>
+• <b>σ₂ = ${S2.toFixed(3)} MPa</b> on the y' faces → arrows ${S2 >= 0 ? "outward" : "inward"}
+<span class="warn">Draw this element rotated at ${THETA1.toFixed(3)}° with no shear arrows.</span>`,
+          },
+          {
+            angle: THETA1,
+            title: "Step 6 — Where is θp2?",
+            body: `θp2 = θp1 + 90° = ${THETA1.toFixed(3)}° + 90° = ${(THETA1 + 90).toFixed(3)}°<br>(or equivalently ${THETA2_display.toFixed(3)}°).<br><br>
 The two principal planes are always <b>exactly 90° apart</b>. If the σ₁ face is at ${THETA1.toFixed(3)}°, the σ₂ face is already perpendicular — it is the <b>top/bottom faces</b> of the rotated element shown in Step 5.<br><br>
 <b>You do NOT need a second element for θp2.</b> Both principal stresses appear on the same rotated element — σ₁ on one pair of faces, σ₂ on the perpendicular pair.
-<span class="warn">θp1 and θp2 describe opposite face-pairs of the same element.</span>`
-    },
-    {
-      angle: THETAS,
-      title: `Step 7 — Rotate to θs1 = ${THETAS.toFixed(3)}° → Max shear element`,
-      body: `Max shear plane is always <b>45° from the principal plane</b>.<br>
+<span class="warn">θp1 and θp2 describe opposite face-pairs of the same element.</span>`,
+          },
+          {
+            angle: THETAS,
+            title: `Step 7 — Rotate to θs1 = ${THETAS.toFixed(3)}° → Max shear element`,
+            body: `Max shear plane is always <b>45° from the principal plane</b>.<br>
 <span class="formula">θs1 = θp1 − 45° = ${THETA1.toFixed(3)}° − 45° = ${THETAS.toFixed(3)}°</span>
 ${THETAS < 0 ? `A negative angle means <b>${Math.abs(THETAS).toFixed(3)}° clockwise</b> from the x-axis.` : `A positive angle means <b>${THETAS.toFixed(3)}° counter-clockwise</b> from the x-axis.`}<br><br>
 On this element:<br>
 • <b>τmax = ${R.toFixed(3)} MPa</b> on all four faces (pinwheel, ${maxShearPinwheel})<br>
 • <b>σavg = ${AVG.toFixed(3)} MPa</b> on all four faces
-<span class="warn">σavg = ${AVG.toFixed(3)} is NOT zero — it acts on all four faces alongside the shear.</span>`
-    },
-    {
-      angle: THETAS,
-      title: 'Step 8 — Final: what to draw in your answer',
-      body: `You need <b>two elements</b> in your final answer:<br><br>
+<span class="warn">σavg = ${AVG.toFixed(3)} is NOT zero — it acts on all four faces alongside the shear.</span>`,
+          },
+          {
+            angle: THETAS,
+            title: "Step 8 — Final: what to draw in your answer",
+            body: `You need <b>two elements</b> in your final answer:<br><br>
 <b>① Principal stress element</b> — rotated ${Math.abs(THETA1).toFixed(3)}° ${elem1RotDir}:<br>
-&nbsp;&nbsp;• σ₁ = ${S1.toFixed(3)} MPa ${S1 >= 0 ? 'outward' : 'inward'} on x' faces<br>
-&nbsp;&nbsp;• σ₂ = ${S2.toFixed(3)} MPa ${S2 >= 0 ? 'outward' : 'inward'} on y' faces<br>
+&nbsp;&nbsp;• σ₁ = ${S1.toFixed(3)} MPa ${S1 >= 0 ? "outward" : "inward"} on x' faces<br>
+&nbsp;&nbsp;• σ₂ = ${S2.toFixed(3)} MPa ${S2 >= 0 ? "outward" : "inward"} on y' faces<br>
 &nbsp;&nbsp;• No shear arrows. Label θp1 = ${THETA1.toFixed(3)}°.<br><br>
 <b>② Max shear element</b> — rotated ${Math.abs(THETAS).toFixed(3)}° ${elem2RotDir}:<br>
 &nbsp;&nbsp;• τmax = ${R.toFixed(3)} MPa on all faces (${maxShearPinwheel} pinwheel)<br>
-&nbsp;&nbsp;• σavg = ${AVG.toFixed(3)} MPa ${AVG >= 0 ? 'outward' : 'inward'} on all faces<br>
+&nbsp;&nbsp;• σavg = ${AVG.toFixed(3)} MPa ${AVG >= 0 ? "outward" : "inward"} on all faces<br>
 &nbsp;&nbsp;• Label θs1 = ${THETAS.toFixed(3)}°.
-<span class="warn">Rotation angles are always referenced from the original x-axis.</span>`
-    },
-  ];
-}
+<span class="warn">Rotation angles are always referenced from the original x-axis.</span>`,
+          },
+        ];
+      }
 
-const steps = buildSteps();
+      const steps = buildSteps();
 
-// ── Animation ─────────────────────────────────────────────────────────────────
-function animTo(target, onDone) {
-  if (animId) cancelAnimationFrame(animId);
-  const start = curAngle, diff = target - start;
-  const dur = Math.max(Math.abs(diff) * 20, 300);
-  const t0 = performance.now();
-  function stepFn(now) {
-    const p = Math.min((now - t0) / dur, 1);
-    const e = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;
-    curAngle = start + diff * e;
-    draw(curAngle, { skipLabels: p < 1 });
-    if (p < 1) {
-      animId = requestAnimationFrame(stepFn);
-    } else {
-      curAngle = target;
-      draw(target);
-      if (onDone) onDone();
-    }
-  }
-  animId = requestAnimationFrame(stepFn);
-}
+      // ── Animation ─────────────────────────────────────────────────────────────────
+      function animTo(target, onDone) {
+        if (animId) cancelAnimationFrame(animId);
+        const start = curAngle,
+          diff = target - start;
+        const dur = Math.max(Math.abs(diff) * 20, 300);
+        const t0 = performance.now();
+        function stepFn(now) {
+          const p = Math.min((now - t0) / dur, 1);
+          const e = p < 0.5 ? 2 * p * p : -1 + (4 - 2 * p) * p;
+          curAngle = start + diff * e;
+          draw(curAngle, { skipLabels: p < 1 });
+          if (p < 1) {
+            animId = requestAnimationFrame(stepFn);
+          } else {
+            curAngle = target;
+            draw(target);
+            if (onDone) onDone();
+          }
+        }
+        animId = requestAnimationFrame(stepFn);
+      }
 
-// ── Step navigation ───────────────────────────────────────────────────────────
-function showStep(i) {
-  step = Math.max(0, Math.min(i, steps.length - 1));
-  const s = steps[step];
-  document.getElementById('exTitle').textContent = s.title;
-  document.getElementById('exBody').innerHTML = s.body;
-  animTo(s.angle);
-  document.getElementById('progFill').style.width = ((step + 1) / steps.length * 100) + '%';
-  document.querySelectorAll('.step-btn').forEach((b, bi) => {
-    b.classList.toggle('active', bi === step);
-    b.classList.toggle('done', bi < step);
-  });
-  document.getElementById('btnPrev').disabled = (step === 0);
-  document.getElementById('btnNext').disabled = (step === steps.length - 1);
-}
+      // ── Step navigation ───────────────────────────────────────────────────────────
+      function showStep(i) {
+        step = Math.max(0, Math.min(i, steps.length - 1));
+        const s = steps[step];
+        document.getElementById("exTitle").textContent = s.title;
+        document.getElementById("exBody").innerHTML = s.body;
+        animTo(s.angle);
+        document.getElementById("progFill").style.width =
+          ((step + 1) / steps.length) * 100 + "%";
+        document.querySelectorAll(".step-btn").forEach((b, bi) => {
+          b.classList.toggle("active", bi === step);
+          b.classList.toggle("done", bi < step);
+        });
+        document.getElementById("btnPrev").disabled = step === 0;
+        document.getElementById("btnNext").disabled = step === steps.length - 1;
+      }
 
-function next() { if (step < steps.length - 1) showStep(step + 1); }
-function prev() { if (step > 0) showStep(step - 1); }
+      function next() {
+        if (step < steps.length - 1) showStep(step + 1);
+      }
+      function prev() {
+        if (step > 0) showStep(step - 1);
+      }
 
-function autoPlay() {
-  if (autoT) { clearTimeout(autoT); autoT = null; return; }
-  let i = step;
-  function go() {
-    if (i >= steps.length) return;
-    showStep(i); i++;
-    autoT = setTimeout(go, 4200);
-  }
-  go();
-}
+      function autoPlay() {
+        if (autoT) {
+          clearTimeout(autoT);
+          autoT = null;
+          return;
+        }
+        let i = step;
+        function go() {
+          if (i >= steps.length) return;
+          showStep(i);
+          i++;
+          autoT = setTimeout(go, 4200);
+        }
+        go();
+      }
 
-// ── Build step buttons ────────────────────────────────────────────────────────
-const sb = document.getElementById('stepBtns');
-steps.forEach((s, i) => {
-  const b = document.createElement('button');
-  b.className = 'step-btn';
-  const shortTitle = s.title.split('—').slice(1).join('—').trim().substring(0, 26) || s.title;
-  b.innerHTML = `<span class="snum">Step ${i + 1}</span>${shortTitle}`;
-  b.onclick = () => showStep(i);
-  sb.appendChild(b);
-});
+      // ── Build step buttons ────────────────────────────────────────────────────────
+      const sb = document.getElementById("stepBtns");
+      steps.forEach((s, i) => {
+        const b = document.createElement("button");
+        b.className = "step-btn";
+        const shortTitle =
+          s.title.split("—").slice(1).join("—").trim().substring(0, 26) ||
+          s.title;
+        b.innerHTML = `<span class="snum">Step ${i + 1}</span>${shortTitle}`;
+        b.onclick = () => showStep(i);
+        sb.appendChild(b);
+      });
 
-// ── Init ──────────────────────────────────────────────────────────────────────
-draw(0);
-showStep(0);
+      // ── Init ──────────────────────────────────────────────────────────────────────
+      draw(0);
+      showStep(0);
 
-// Allow keyboard navigation
-document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight') next();
-  if (e.key === 'ArrowLeft')  prev();
-});
-</script>
-</body>
+      // Allow keyboard navigation
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "ArrowRight") next();
+        if (e.key === "ArrowLeft") prev();
+      });
+    </script>
+  </body>
 </html>
