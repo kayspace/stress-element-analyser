@@ -104,8 +104,12 @@ The canvas-based renderer displays:
 
 ```
 .
-├── index.html   # Main application (UI + logic + rendering)
-└── README.md
+├── index.html   # Home Page (UI + logic + rendering)
+├── guide.html   # Guide Page (UI + logic + rendering)
+├── README.md
+├── CONTRIBUTING.md
+├── CONTENT_LICENSE.md
+└── LICENSE.md
 ```
 
 ## Potential Improvements For Future
@@ -115,6 +119,10 @@ The canvas-based renderer displays:
 * Export snapshots as images
 * Mobile UI optimization
 * Support for 3D stress states
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for detailed information on how to get started.
 
 ## Licensing
 
@@ -133,3 +141,11 @@ Licensed under CC BY-NC-SA 4.0
 - You can use and modify the code, but must open-source changes if deployed
 - You can use the educational material for teaching and learning
 - You cannot sell or commercially reuse the educational content
+
+## Contact
+
+For inquiries or collaborations about using the content or the code, reach out to me at kayzspace@outlook.com
+
+---
+
+Code: [GNU AGPL v3.0](LICENSE) | Content: [CC BY-NC-SA 4.0](CONTENT_LICENSE.md)
