@@ -400,7 +400,14 @@
         onclick="openGuide()"
         style="background: #1c2433; border-color: #2d3d55; color: #7ea6f0"
       >
-        View Full Plane Transformation Guide
+        Plane Transformation Guide
+      </button>
+      <button
+        class="calc-btn"
+        onclick="openMohrGuide()"
+        style="background: #331c1c; border-color: #552d2d; color: #f07e7e"
+      >
+        Mohr Guide
       </button>
     </div>
 
@@ -917,6 +924,15 @@
         const txy = document.getElementById("itxy").value;
 
         const url = `guide.html?sx=${encodeURIComponent(sx)}&sy=${encodeURIComponent(sy)}&txy=${encodeURIComponent(txy)}`;
+        window.open(url, "_blank");
+      }
+
+      function openMohrGuide() {
+        const sx = document.getElementById("isx").value;
+        const sy = document.getElementById("isy").value;
+        const txy = document.getElementById("itxy").value;
+
+        const url = `mohr_guide2.html?sx=${encodeURIComponent(sx)}&sy=${encodeURIComponent(sy)}&txy=${encodeURIComponent(txy)}`;
         window.open(url, "_blank");
       }
 
