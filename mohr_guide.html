@@ -1,0 +1,1102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mohr's Circle — Step-by-Step Guide</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: #0f0f13;
+        color: #e8e6e0;
+        font-family: "Segoe UI", system-ui, sans-serif;
+        padding: 14px;
+        min-height: 100vh;
+      }
+
+      .top-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+        flex-wrap: wrap;
+      }
+      .back-btn {
+        font-size: 12px;
+        padding: 6px 13px;
+        border-radius: 7px;
+        border: 1px solid #2e2d2a;
+        background: #1c2d1c;
+        color: #7ec87e;
+        border-color: #3d5d3d;
+        cursor: pointer;
+        font-family: inherit;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.15s;
+      }
+      h1 {
+        font-size: 15px;
+        font-weight: 600;
+        color: #c8c5bc;
+      }
+
+      .prob-bar {
+        font-size: 11px;
+        color: #5a5752;
+        margin-bottom: 10px;
+        line-height: 1.7;
+        background: #141318;
+        border: 1px solid #1e1d1a;
+        border-radius: 7px;
+        padding: 8px 12px;
+      }
+      .prob-bar b {
+        color: #9a9790;
+      }
+      .val {
+        color: #7eb8f0;
+      }
+
+      .steps-row {
+        display: flex;
+        gap: 5px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 8px;
+      }
+      .step-btn {
+        font-size: 10px;
+        padding: 5px 10px;
+        border-radius: 6px;
+        border: 1px solid #2e2d2a;
+        background: #1a1917;
+        color: #666;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.15s;
+        white-space: nowrap;
+      }
+      .step-btn:hover {
+        background: #222;
+        color: #bbb;
+      }
+      .step-btn.active {
+        background: #1c2a3a;
+        color: #7eb8f0;
+        border-color: #2d4d7a;
+      }
+      .step-btn.done {
+        color: #3a5a7a;
+        border-color: #1e2d3d;
+      }
+
+      .progress-bar {
+        height: 3px;
+        background: #1a1917;
+        border-radius: 2px;
+        margin-bottom: 10px;
+      }
+      .progress-fill {
+        height: 100%;
+        background: #7eb8f0;
+        border-radius: 2px;
+        transition: width 0.4s ease;
+      }
+
+      .main-area {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        justify-content: center;
+      }
+      canvas {
+        display: block;
+        border-radius: 10px;
+        background: #141318;
+        border: 1px solid #222028;
+        flex-shrink: 0;
+      }
+
+      .panel {
+        flex: 1;
+        min-width: 190px;
+        max-width: 430px;
+      }
+      .explain-box {
+        background: #141318;
+        border: 1px solid #222028;
+        border-radius: 8px;
+        padding: 11px;
+        margin-bottom: 7px;
+        min-height: 120px;
+      }
+      .ex-title {
+        font-size: 10px;
+        font-weight: 600;
+        color: #7eb8f0;
+        margin-bottom: 6px;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+      .ex-body {
+        font-size: 11.5px;
+        color: #b0ada6;
+        line-height: 1.75;
+      }
+      .ex-body b {
+        color: #e0ddd8;
+      }
+      .ex-body .f {
+        display: block;
+        margin: 4px 0;
+        background: #1a1917;
+        border-radius: 4px;
+        padding: 4px 8px;
+        font-family: monospace;
+        font-size: 11px;
+        color: #c8c5bc;
+        border-left: 2px solid #7eb8f0;
+      }
+      .ex-body .w {
+        color: #c9a84c;
+        font-style: italic;
+        display: block;
+        margin-top: 5px;
+        font-size: 11px;
+      }
+      .ex-body .g {
+        color: #7ec87e;
+        font-style: italic;
+        display: block;
+        margin-top: 5px;
+        font-size: 11px;
+      }
+
+      .vals-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5px;
+        margin-bottom: 7px;
+      }
+      .vc {
+        background: #1a1917;
+        border: 1px solid #252320;
+        border-radius: 6px;
+        padding: 6px 9px;
+      }
+      .vl {
+        font-size: 9px;
+        color: #5a5752;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        margin-bottom: 1px;
+      }
+      .vv {
+        font-size: 12px;
+        font-weight: 500;
+        color: #c8c5bc;
+      }
+      .vv.blue {
+        color: #7eb8f0;
+      }
+      .vv.green {
+        color: #7ec87e;
+      }
+      .vv.amber {
+        color: #c9a84c;
+      }
+
+      .legend {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 6px;
+      }
+      .li {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 10px;
+        color: #5a5752;
+      }
+      .ld {
+        width: 14px;
+        height: 3px;
+        border-radius: 2px;
+      }
+
+      .nav-row {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        margin-top: 10px;
+      }
+      button.nav {
+        font-size: 12px;
+        padding: 7px 16px;
+        border-radius: 7px;
+        border: 1px solid #2e2d2a;
+        background: #1a1917;
+        color: #b0ada6;
+        cursor: pointer;
+        font-family: inherit;
+        transition: all 0.15s;
+      }
+      button.nav:hover {
+        background: #252320;
+      }
+      button.nav.primary {
+        background: #1c2a3a;
+        color: #7eb8f0;
+        border-color: #2d4d7a;
+      }
+      button.nav:disabled {
+        opacity: 0.3;
+        cursor: default;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top-bar">
+      <h1>Mohr's Circle — Step-by-Step Guide</h1>
+    </div>
+
+    <div class="prob-bar" id="probBar">Loading...</div>
+
+    <div class="steps-row" id="stepBtns"></div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progFill"></div>
+    </div>
+
+    <div class="main-area">
+      <canvas id="cv" width="430" height="400"></canvas>
+      <div class="panel">
+        <div class="explain-box">
+          <div class="ex-title" id="exTitle">—</div>
+          <div class="ex-body" id="exBody">—</div>
+        </div>
+        <div class="vals-grid">
+          <div class="vc">
+            <div class="vl">Centre C (σavg)</div>
+            <div class="vv blue" id="iv-c">—</div>
+          </div>
+          <div class="vc">
+            <div class="vl">Radius R (τmax)</div>
+            <div class="vv blue" id="iv-r">—</div>
+          </div>
+          <div class="vc">
+            <div class="vl">σ₁</div>
+            <div class="vv green" id="iv-s1">—</div>
+          </div>
+          <div class="vc">
+            <div class="vl">σ₂</div>
+            <div class="vv green" id="iv-s2">—</div>
+          </div>
+          <div class="vc">
+            <div class="vl">θp1</div>
+            <div class="vv amber" id="iv-tp">—</div>
+          </div>
+          <div class="vc">
+            <div class="vl">θs1</div>
+            <div class="vv amber" id="iv-ts">—</div>
+          </div>
+        </div>
+        <div class="legend">
+          <div class="li">
+            <div class="ld" style="background: #7eb8f0"></div>
+            Circle / axes
+          </div>
+          <div class="li">
+            <div class="ld" style="background: #7ec87e"></div>
+            Key points
+          </div>
+          <div class="li">
+            <div class="ld" style="background: #c9a84c"></div>
+            Angles / arcs
+          </div>
+          <div class="li">
+            <div class="ld" style="background: #e06060"></div>
+            σ2 side
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="back-btn" onclick="window.close()">
+        ← Back to Analyzer
+      </button>
+      <button class="nav" id="btnPrev" onclick="prev()">← Back</button>
+      <button class="nav primary" id="btnNext" onclick="next()">Next →</button>
+      <button class="nav" onclick="autoPlay()">▶ Auto-play</button>
+    </div>
+
+    <script>
+      // ── URL params ────────────────────────────────────────────────────
+      const params = new URLSearchParams(window.location.search);
+      const SX = parseFloat(params.get("sx") ?? 20);
+      const SY = parseFloat(params.get("sy") ?? 10);
+      const TXY = parseFloat(params.get("txy") ?? 10);
+
+      // ── Compute ───────────────────────────────────────────────────────
+      const AVG = (SX + SY) / 2;
+      const R = Math.sqrt(((SX - SY) / 2) ** 2 + TXY ** 2);
+      const S1 = AVG + R,
+        S2 = AVG - R;
+      const tp = (0.5 * Math.atan2(2 * TXY, SX - SY) * 180) / Math.PI;
+      function snAt(d) {
+        const t = (d * Math.PI) / 180;
+        return AVG + ((SX - SY) / 2) * Math.cos(2 * t) + TXY * Math.sin(2 * t);
+      }
+      const tA = tp,
+        tB = tp + (tp <= 0 ? 90 : -90);
+      const raw = Math.abs(snAt(tA) - S1) < Math.abs(snAt(tB) - S1) ? tA : tB;
+      const TP1 = raw < 0 ? raw + 180 : raw;
+      const TP2 = TP1 + 90;
+      const TS1 = TP1 - 45;
+      const twoThetaP = 2 * tp; // angle on Mohr's circle from A to σ1 point
+
+      // ── Header ────────────────────────────────────────────────────────
+      document.getElementById("probBar").innerHTML =
+        `σx=<b class="val">${SX}</b>, σy=<b class="val">${SY}</b>, τxy=<b class="val">${TXY}</b> MPa &nbsp;|&nbsp;
+   σavg=<b class="val">${AVG.toFixed(3)}</b>, R=τmax=<b class="val">${R.toFixed(3)}</b>, 
+   σ₁=<b class="val">${S1.toFixed(3)}</b>, σ₂=<b class="val">${S2.toFixed(3)}</b>, 
+   θp1=<b class="val">${TP1.toFixed(3)}°</b>, θs1=<b class="val">${TS1.toFixed(3)}°</b>`;
+
+      // ── Cards ─────────────────────────────────────────────────────────
+      document.getElementById("iv-c").textContent = AVG.toFixed(3) + " MPa";
+      document.getElementById("iv-r").textContent = R.toFixed(3) + " MPa";
+      document.getElementById("iv-s1").textContent = S1.toFixed(3) + " MPa";
+      document.getElementById("iv-s2").textContent = S2.toFixed(3) + " MPa";
+      document.getElementById("iv-tp").textContent = TP1.toFixed(3) + "°";
+      document.getElementById("iv-ts").textContent = TS1.toFixed(3) + "°";
+
+      // ── Canvas ────────────────────────────────────────────────────────
+      const cv = document.getElementById("cv");
+      const ctx = cv.getContext("2d");
+      const W = 430,
+        H = 400;
+
+      // coordinate mapping: world → canvas
+      // σ axis: horizontal. τ axis: vertical, positive DOWNWARD (standard Mohr's convention)
+      // Circle centre at canvas (CX, CY)
+      const CX = W * 0.48,
+        CY = H * 0.5;
+      // auto-scale to fit
+      const allSigma = [SX, SY, S1, S2, AVG];
+      const maxSig = Math.max(...allSigma.map(Math.abs), 1);
+      const SCALE = Math.min(
+        (W * 0.32) / Math.max(R, maxSig * 0.5, 1),
+        (H * 0.32) / Math.max(R, 1),
+      );
+
+      function wx(sigma) {
+        return CX + (sigma - AVG) * SCALE;
+      } // world σ → canvas x (centred on AVG)
+      function wy(tau) {
+        return CY + tau * SCALE;
+      } // world τ → canvas y (+ τ = downward)
+
+      // ── Drawing helpers ───────────────────────────────────────────────
+      function arrowC(x1, y1, x2, y2, col, lw) {
+        lw = lw || 1.5;
+        const dx = x2 - x1,
+          dy = y2 - y1,
+          len = Math.sqrt(dx * dx + dy * dy);
+        if (len < 3) return;
+        const ux = dx / len,
+          uy = dy / len;
+        ctx.save();
+        ctx.strokeStyle = col;
+        ctx.fillStyle = col;
+        ctx.lineWidth = lw;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2 - ux * 8, y2 - uy * 8);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(x2, y2);
+        ctx.lineTo(x2 - ux * 8 - uy * 4, y2 - uy * 8 + ux * 4);
+        ctx.lineTo(x2 - ux * 8 + uy * 4, y2 - uy * 8 - ux * 4);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function dot(x, y, r, col) {
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fillStyle = col;
+        ctx.fill();
+      }
+
+      function labelC(x, y, text, col, size, align, baseline) {
+        ctx.fillStyle = col || "#c8c5bc";
+        ctx.font = (size || 10) + "px Segoe UI,system-ui";
+        ctx.textAlign = align || "center";
+        ctx.textBaseline = baseline || "middle";
+        ctx.fillText(text, x, y);
+      }
+
+      function boldLabel(x, y, text, col, size, align, baseline) {
+        ctx.fillStyle = col || "#e0ddd8";
+        ctx.font = "bold " + (size || 10) + "px Segoe UI,system-ui";
+        ctx.textAlign = align || "center";
+        ctx.textBaseline = baseline || "middle";
+        ctx.fillText(text, x, y);
+      }
+
+      // ── Base drawing: axes + grid ─────────────────────────────────────
+      function drawBase() {
+        ctx.clearRect(0, 0, W, H);
+        // light grid
+        ctx.strokeStyle = "#1a1a22";
+        ctx.lineWidth = 0.5;
+        for (let x = 0; x < W; x += 30) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, H);
+          ctx.stroke();
+        }
+        for (let y = 0; y < H; y += 30) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(W, y);
+          ctx.stroke();
+        }
+        // σ axis
+        arrowC(18, CY, W - 14, CY, "#3a3a50", 1);
+        boldLabel(W - 10, CY, "σ", "#5a5a70", 11, "left");
+        // τ axis (positive downward)
+        arrowC(CX, H - 14, CX, 16, "#3a3a50", 1);
+        boldLabel(CX, 12, "τ", "#5a5a70", 11, "center", "bottom");
+        // zero origin
+        labelC(CX - 8, CY - 8, "0", "#3a3a50", 9);
+        // σ tick labels
+        const sigmaVals = [SX, SY, S1, S2, AVG].filter(
+          (v, i, a) => a.indexOf(v) === i,
+        );
+        ctx.fillStyle = "#383838";
+        ctx.font = "8px Segoe UI";
+        ctx.textAlign = "center";
+        sigmaVals.forEach((v) => {
+          const px = wx(v);
+          ctx.beginPath();
+          ctx.moveTo(px, CY - 3);
+          ctx.lineTo(px, CY + 3);
+          ctx.strokeStyle = "#333";
+          ctx.lineWidth = 0.7;
+          ctx.stroke();
+        });
+      }
+
+      // ── Animated element reveal ────────────────────────────────────────
+      // Each step draws progressively more of the circle
+      // stepIdx controls what is shown
+
+      let stepIdx = 0,
+        autoT = null;
+
+      const STEPS = [
+        {
+          title: "Step 1 — Set up the axes",
+          body: () => `Draw two perpendicular axes:<br>
+<b>Horizontal axis (→)</b>: Normal stress σ. Positive = right (tension).<br>
+<b>Vertical axis (↓)</b>: Shear stress τ. <b>Positive τ is plotted downward</b> by convention (CCW tendency on element = downward on Mohr's circle).<br><br>
+This is the Mohr's circle coordinate system. Every point we plot here will represent one plane orientation.
+<span class="w">Positive τ downward is the standard engineering convention for Mohr's circle. Some books use upward — always check.</span>`,
+          draw: () => {
+            drawBase();
+          },
+        },
+        {
+          title: "Step 2 — Plot Point A: the x-face (σx, τxy)",
+          body: () => `Plot Point A at coordinates <b>(${SX}, ${TXY})</b>.<br><br>
+This represents the stress state on the <b>+x face</b> of the element:<br>
+• Normal stress on x-face = σx = <b>${SX} MPa</b><br>
+• Shear stress on x-face = τxy = <b>${TXY} MPa</b> (${TXY >= 0 ? "positive → plot downward" : "negative → plot upward"})<br><br>
+Point A corresponds to θ = 0° (original orientation).
+<span class="g">Point A is always the starting point. It represents the x-face as given.</span>`,
+          draw: () => {
+            drawBase();
+            const Ax = wx(SX),
+              Ay = wy(TXY);
+            // dashed line from σ-axis down to A
+            ctx.setLineDash([4, 3]);
+            ctx.strokeStyle = "#2a3a2a";
+            ctx.lineWidth = 0.8;
+            ctx.beginPath();
+            ctx.moveTo(Ax, CY);
+            ctx.lineTo(Ax, Ay);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(CX, Ay);
+            ctx.lineTo(Ax, Ay);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            dot(Ax, Ay, 5, "#7ec87e");
+            boldLabel(
+              Ax + (SX > AVG ? 8 : -8),
+              Ay + (TXY >= 0 ? 12 : -12),
+              `A(${SX}, ${TXY})`,
+              "#7ec87e",
+              9.5,
+              SX > AVG ? "left" : "right",
+            );
+          },
+        },
+        {
+          title: "Step 3 — Plot Point B: the y-face (σy, −τxy)",
+          body: () => `Plot Point B at coordinates <b>(${SY}, ${-TXY})</b>.<br><br>
+This represents the stress state on the <b>+y face</b>:<br>
+• Normal stress on y-face = σy = <b>${SY} MPa</b><br>
+• Shear stress on y-face = <b>−τxy = ${-TXY} MPa</b><br><br>
+<b>Why the sign reversal?</b> The shear on the y-face acts opposite to the x-face (to maintain moment equilibrium of the element). So τ on the y-face always plots on the opposite side of the σ-axis from τ on the x-face.<br><br>
+Points A and B are <b>diametrically opposite</b> on the circle — they are on perpendicular faces (90° apart in reality = 180° apart on circle).
+<span class="w">A and B always appear on exactly opposite ends of a diameter. Use this as a check.</span>`,
+          draw: () => {
+            drawBase();
+            const Ax = wx(SX),
+              Ay = wy(TXY),
+              Bx = wx(SY),
+              By = wy(-TXY);
+            ctx.setLineDash([4, 3]);
+            ctx.strokeStyle = "#2a3a2a";
+            ctx.lineWidth = 0.8;
+            ctx.beginPath();
+            ctx.moveTo(Ax, CY);
+            ctx.lineTo(Ax, Ay);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(Bx, CY);
+            ctx.lineTo(Bx, By);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            dot(Ax, Ay, 5, "#7ec87e");
+            boldLabel(
+              Ax + (SX > AVG ? 8 : -8),
+              Ay + (TXY >= 0 ? 12 : -12),
+              `A(${SX}, ${TXY})`,
+              "#7ec87e",
+              9.5,
+              SX > AVG ? "left" : "right",
+            );
+            dot(Bx, By, 5, "#e06060");
+            boldLabel(
+              Bx + (SY > AVG ? 8 : -8),
+              By + (-TXY >= 0 ? 12 : -12),
+              `B(${SY}, ${-TXY})`,
+              "#e06060",
+              9.5,
+              SY > AVG ? "left" : "right",
+            );
+          },
+        },
+        {
+          title: "Step 4 — Draw the diameter A→B and find centre C",
+          body: () => `Connect A and B with a straight line. This is the <b>diameter</b> of Mohr's circle.<br><br>
+The <b>midpoint of AB = centre C</b>. It always lies on the σ-axis:<br>
+<span class="f">C = (σavg, 0) = ((${SX}+${SY})/2, 0) = (${AVG.toFixed(3)}, 0)</span>
+<b>Radius R</b> = distance from C to A = distance from C to B:<br>
+<span class="f">R = √[((${SX}−${SY})/2)² + (${TXY})²] = ${R.toFixed(3)} MPa</span>
+<b>R also equals τmax</b> — the maximum possible shear stress at this point.
+<span class="g">The centre C never moves no matter how you rotate the element. This is because σavg is an invariant.</span>`,
+          draw: () => {
+            drawBase();
+            const Ax = wx(SX),
+              Ay = wy(TXY),
+              Bx = wx(SY),
+              By = wy(-TXY);
+            const Ccx = wx(AVG),
+              Ccy = CY;
+            // diameter line
+            ctx.strokeStyle = "#4a4a60";
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.moveTo(Ax, Ay);
+            ctx.lineTo(Bx, By);
+            ctx.stroke();
+            dot(Ax, Ay, 5, "#7ec87e");
+            dot(Bx, By, 5, "#e06060");
+            // centre C
+            dot(Ccx, Ccy, 4, "#7eb8f0");
+            boldLabel(
+              Ccx,
+              Ccy - 10,
+              "C(" + AVG.toFixed(1) + ", 0)",
+              "#7eb8f0",
+              9,
+            );
+            // R label
+            ctx.strokeStyle = "#7eb8f0";
+            ctx.lineWidth = 0.8;
+            ctx.setLineDash([3, 2]);
+            ctx.beginPath();
+            ctx.moveTo(Ccx, Ccy);
+            ctx.lineTo(Ax, Ay);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            const Rmx = (Ccx + Ax) / 2,
+              Rmy = (Ccy + Ay) / 2;
+            boldLabel(Rmx + 8, Rmy, "R=" + R.toFixed(2), "#7eb8f0", 9, "left");
+            boldLabel(
+              Ax + (SX > AVG ? 8 : -8),
+              Ay + (TXY >= 0 ? 12 : -12),
+              `A`,
+              "#7ec87e",
+              9,
+              SX > AVG ? "left" : "right",
+            );
+            boldLabel(
+              Bx + (SY > AVG ? 8 : -8),
+              By + (-TXY >= 0 ? 12 : -12),
+              `B`,
+              "#e06060",
+              9,
+              SY > AVG ? "left" : "right",
+            );
+          },
+        },
+        {
+          title: "Step 5 — Draw the circle",
+          body: () => `Using centre C = (${AVG.toFixed(3)}, 0) and radius R = ${R.toFixed(3)} MPa,
+draw the complete circle.<br><br>
+<b>Every point on this circle</b> represents the (σ, τ) stress state for one particular orientation of the stress element. The entire circle covers all 360° of possible orientations (= 180° of real element rotations due to the doubling rule).<br><br>
+The circle diameter = σ1 − σ2 = 2R = <b>${(2 * R).toFixed(3)} MPa</b>.
+<span class="g">The whole circle is drawn from just three numbers: σx, σy, τxy. Everything else is read from it.</span>`,
+          draw: () => {
+            drawBase();
+            const Ax = wx(SX),
+              Ay = wy(TXY),
+              Bx = wx(SY),
+              By = wy(-TXY);
+            const Ccx = wx(AVG),
+              Ccy = CY,
+              Rcv = R * SCALE;
+            // THE CIRCLE
+            ctx.beginPath();
+            ctx.arc(Ccx, Ccy, Rcv, 0, Math.PI * 2);
+            ctx.strokeStyle = "#7eb8f0";
+            ctx.lineWidth = 1.8;
+            ctx.fillStyle = "rgba(30,40,60,0.3)";
+            ctx.fill();
+            ctx.stroke();
+            // diameter
+            ctx.strokeStyle = "#3a4a5a";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(Ax, Ay);
+            ctx.lineTo(Bx, By);
+            ctx.stroke();
+            dot(Ax, Ay, 5, "#7ec87e");
+            dot(Bx, By, 5, "#e06060");
+            dot(Ccx, Ccy, 4, "#7eb8f0");
+            boldLabel(
+              Ax + (SX > AVG ? 8 : -8),
+              Ay + (TXY >= 0 ? 12 : -12),
+              "A",
+              "#7ec87e",
+              9,
+              SX > AVG ? "left" : "right",
+            );
+            boldLabel(
+              Bx + (SY > AVG ? 8 : -8),
+              By + (-TXY >= 0 ? 12 : -12),
+              "B",
+              "#e06060",
+              9,
+              SY > AVG ? "left" : "right",
+            );
+            boldLabel(Ccx, Ccy - 10, "C", "#7eb8f0", 9);
+          },
+        },
+        {
+          title: "Step 6 — Find σ₁ and σ₂: where circle meets σ-axis",
+          body: () => `Principal stresses are where <b>τ = 0</b>, i.e. where the circle crosses the <b>horizontal σ-axis</b>.<br><br>
+<b>Right intersection</b> = σ₁ = σavg + R:<br>
+<span class="f">σ₁ = ${AVG.toFixed(3)} + ${R.toFixed(3)} = ${S1.toFixed(3)} MPa</span>
+<b>Left intersection</b> = σ₂ = σavg − R:<br>
+<span class="f">σ₂ = ${AVG.toFixed(3)} − ${R.toFixed(3)} = ${S2.toFixed(3)} MPa</span>
+<b>Verify invariant:</b> σ₁ + σ₂ = ${(S1 + S2).toFixed(3)} = σx + σy = ${SX + SY}  ✓
+<span class="g">These are the maximum and minimum normal stresses possible at this point, for any orientation.</span>`,
+          draw: () => {
+            drawBase();
+            const Ax = wx(SX),
+              Ay = wy(TXY),
+              Bx = wx(SY),
+              By = wy(-TXY);
+            const Ccx = wx(AVG),
+              Ccy = CY,
+              Rcv = R * SCALE;
+            ctx.beginPath();
+            ctx.arc(Ccx, Ccy, Rcv, 0, Math.PI * 2);
+            ctx.strokeStyle = "#7eb8f0";
+            ctx.lineWidth = 1.8;
+            ctx.fillStyle = "rgba(30,40,60,0.3)";
+            ctx.fill();
+            ctx.stroke();
+            ctx.strokeStyle = "#3a4a5a";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(Ax, Ay);
+            ctx.lineTo(Bx, By);
+            ctx.stroke();
+            dot(Ax, Ay, 4, "#7ec87e");
+            dot(Bx, By, 4, "#e06060");
+            dot(Ccx, Ccy, 3, "#7eb8f0");
+            // σ1 and σ2 points
+            const s1x = wx(S1),
+              s2x = wx(S2);
+            dot(s1x, CY, 6, "#7ec87e");
+            dot(s2x, CY, 6, "#e06060");
+            boldLabel(s1x, CY - 14, "σ₁=" + S1.toFixed(2), "#7ec87e", 9.5);
+            boldLabel(s2x, CY - 14, "σ₂=" + S2.toFixed(2), "#e06060", 9.5);
+            // dashed lines down from σ1,σ2 to axis
+            ctx.strokeStyle = "#2a4a2a";
+            ctx.lineWidth = 0.6;
+            ctx.setLineDash([3, 3]);
+            ctx.beginPath();
+            ctx.moveTo(s1x, CY);
+            ctx.lineTo(s1x, CY + 20);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(s2x, CY);
+            ctx.lineTo(s2x, CY + 20);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            // diameter label
+            ctx.strokeStyle = "#5a5a40";
+            ctx.lineWidth = 0.8;
+            ctx.beginPath();
+            ctx.moveTo(s2x, CY + 18);
+            ctx.lineTo(s1x, CY + 18);
+            ctx.stroke();
+            boldLabel(
+              (s1x + s2x) / 2,
+              CY + 26,
+              "σ₁−σ₂ = 2R = 2τmax",
+              "#7a7a40",
+              8,
+            );
+          },
+        },
+        {
+          title: "Step 7 — Find θp: the angle to the principal plane",
+          body: () => {
+            const twoTp = 2 * tp;
+            return `The angle <b>2θp</b> on Mohr's circle is the angle from Point A to the σ₁ point, measured at the centre C.<br><br>
+<span class="f">2θp = ${twoTp.toFixed(3)}°  →  θp = ${tp.toFixed(3)}°</span>
+Since θp = <b>${tp.toFixed(3)}°</b> is ${tp < 0 ? "negative (clockwise rotation)" : "positive (CCW rotation)"}:<br>
+θp1 (for σ₁ face) = <b>${TP1.toFixed(3)}°</b> ${TP1 !== tp ? "(added 180° to express as standard positive angle)" : ""}<br>
+θp2 (for σ₂ face) = <b>${TP2.toFixed(3)}°</b> (= θp1 + 90°)<br><br>
+<b>Angle doubling rule:</b> divide the circle angle by 2 to get the real rotation angle.
+<span class="w">Always measure 2θp from Point A (the x-face), not from the σ-axis. Measurement is from A to σ₁ point at centre C.</span>`;
+          },
+          draw: () => {
+            drawBase();
+            const Ax = wx(SX),
+              Ay = wy(TXY),
+              Bx = wx(SY),
+              By = wy(-TXY);
+            const Ccx = wx(AVG),
+              Ccy = CY,
+              Rcv = R * SCALE;
+            ctx.beginPath();
+            ctx.arc(Ccx, Ccy, Rcv, 0, Math.PI * 2);
+            ctx.strokeStyle = "#7eb8f0";
+            ctx.lineWidth = 1.5;
+            ctx.fillStyle = "rgba(30,40,60,0.3)";
+            ctx.fill();
+            ctx.stroke();
+            ctx.strokeStyle = "#3a4a5a";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(Ax, Ay);
+            ctx.lineTo(Bx, By);
+            ctx.stroke();
+            dot(Ax, Ay, 5, "#7ec87e");
+            dot(Bx, By, 4, "#e06060");
+            dot(Ccx, Ccy, 3, "#7eb8f0");
+            const s1x = wx(S1);
+            dot(s1x, CY, 6, "#7ec87e");
+            boldLabel(s1x, CY - 14, "σ₁", "#7ec87e", 10);
+            // 2θp arc from A to σ1 point
+            const angA = Math.atan2(Ay - Ccy, Ax - Ccx); // angle of A from centre
+            const angS1 = 0; // σ1 is on the right of the circle = angle 0 from centre
+            ctx.strokeStyle = "#c9a84c";
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([3, 2]);
+            ctx.beginPath();
+            // arc from angA to angS1 (going in the correct direction)
+            const goingCCW = tp >= 0;
+            if (goingCCW) ctx.arc(Ccx, Ccy, Rcv * 0.55, angA, angS1, true);
+            else ctx.arc(Ccx, Ccy, Rcv * 0.55, angA, angS1, false);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            // 2θp label
+            const midAng = (angA + angS1) / 2 + (goingCCW ? 0 : Math.PI);
+            const lx = Ccx + Rcv * 0.62 * Math.cos(midAng),
+              ly = Ccy + Rcv * 0.62 * Math.sin(midAng);
+            boldLabel(lx, ly, "2θp=" + (2 * tp).toFixed(1) + "°", "#c9a84c", 9);
+            // line from C to A
+            ctx.strokeStyle = "#c9a84c";
+            ctx.lineWidth = 0.8;
+            ctx.beginPath();
+            ctx.moveTo(Ccx, Ccy);
+            ctx.lineTo(Ax, Ay);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(Ccx, Ccy);
+            ctx.lineTo(s1x, Ccy);
+            ctx.stroke();
+            boldLabel(
+              Ax + (SX > AVG ? 8 : -8),
+              Ay + (TXY >= 0 ? 11 : -11),
+              "A (θ=0°)",
+              "#7ec87e",
+              8.5,
+              SX > AVG ? "left" : "right",
+            );
+          },
+        },
+        {
+          title: "Step 8 — Find τmax: top and bottom of circle",
+          body: () => `The <b>top and bottom</b> of Mohr's circle give the maximum shear stress:<br>
+<span class="f">τmax = R = ${R.toFixed(3)} MPa</span>
+These points are at <b>90° from the principal stress points</b> on the circle = <b>45° in reality</b>.<br><br>
+Max shear angle: θs1 = θp1 − 45° = <b>${TS1.toFixed(3)}°</b><br><br>
+At these points, the normal stress is <b>σavg = ${AVG.toFixed(3)} MPa</b> (not zero — the centre C is at σavg, not at origin).
+<span class="g">τmax = R = radius of Mohr's circle. This is why the radius is so important.</span>`,
+          draw: () => {
+            drawBase();
+            const Ax = wx(SX),
+              Ay = wy(TXY),
+              Bx = wx(SY),
+              By = wy(-TXY);
+            const Ccx = wx(AVG),
+              Ccy = CY,
+              Rcv = R * SCALE;
+            ctx.beginPath();
+            ctx.arc(Ccx, Ccy, Rcv, 0, Math.PI * 2);
+            ctx.strokeStyle = "#7eb8f0";
+            ctx.lineWidth = 1.5;
+            ctx.fillStyle = "rgba(30,40,60,0.3)";
+            ctx.fill();
+            ctx.stroke();
+            ctx.strokeStyle = "#3a4a5a";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(Ax, Ay);
+            ctx.lineTo(Bx, By);
+            ctx.stroke();
+            dot(Ax, Ay, 4, "#7ec87e");
+            dot(Bx, By, 4, "#e06060");
+            const s1x = wx(S1),
+              s2x = wx(S2);
+            dot(s1x, CY, 5, "#7ec87e");
+            dot(s2x, CY, 5, "#e06060");
+            boldLabel(s1x, CY - 12, "σ₁", "#7ec87e", 9);
+            boldLabel(s2x, CY - 12, "σ₂", "#e06060", 9);
+            // top and bottom points
+            dot(Ccx, CY - Rcv, 6, "#c9a84c");
+            dot(Ccx, CY + Rcv, 6, "#c9a84c");
+            boldLabel(
+              Ccx + 8,
+              CY - Rcv - 14,
+              "τmax=" + R.toFixed(2),
+              "#c9a84c",
+              9.5,
+              "left",
+            );
+            boldLabel(Ccx + 8, CY + Rcv + 6, "−τmax", "#c9a84c", 9.5, "left");
+            // vertical line through top/bottom
+            ctx.strokeStyle = "#c9a84c";
+            ctx.lineWidth = 0.8;
+            ctx.setLineDash([3, 2]);
+            ctx.beginPath();
+            ctx.moveTo(Ccx, CY - Rcv);
+            ctx.lineTo(Ccx, CY + Rcv);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            // σavg annotation
+            boldLabel(
+              Ccx,
+              CY + Rcv + 20,
+              "σavg=" + AVG.toFixed(2) + " on these faces",
+              "#7eb8f0",
+              8.5,
+            );
+            dot(Ccx, CY, 3, "#7eb8f0");
+            boldLabel(Ccx - 8, CY - 8, "C", "#7eb8f0", 9, "right");
+            // θs label
+            boldLabel(
+              Ccx - Rcv * 0.6,
+              CY - Rcv * 0.5,
+              "θs=θp−45°\n=" + TS1.toFixed(1) + "°",
+              "#c9a84c",
+              8.5,
+            );
+          },
+        },
+        {
+          title: "Step 9 — Read any arbitrary plane",
+          body: () => `To find stresses on a plane at any angle θ from the x-axis:<br><br>
+1. Start at Point A on the circle (= x-face, θ=0°).<br>
+2. Rotate by <b>2θ</b> on the circle (same direction as rotation in reality).<br>
+3. Read the (σ, τ) coordinates of the new point.<br><br>
+Example: to find stresses on a plane at θ = 45° from x-axis:<br>
+<span class="f">Rotate 2×45° = 90° from Point A on the circle</span>
+The new point gives you (σ, τ) for that plane.<br><br>
+<b>Complete picture:</b> as θ goes from 0° to 180°, the point on the circle completes one full revolution (0° to 360°). This covers all possible plane orientations.
+<span class="g">The whole power of Mohr's circle: one diagram gives you stresses for every possible plane orientation at a glance.</span>`,
+          draw: () => {
+            drawBase();
+            const Ax = wx(SX),
+              Ay = wy(TXY),
+              Bx = wx(SY),
+              By = wy(-TXY);
+            const Ccx = wx(AVG),
+              Ccy = CY,
+              Rcv = R * SCALE;
+            // Full circle with all annotations
+            ctx.beginPath();
+            ctx.arc(Ccx, Ccy, Rcv, 0, Math.PI * 2);
+            ctx.strokeStyle = "#7eb8f0";
+            ctx.lineWidth = 1.8;
+            ctx.fillStyle = "rgba(30,40,60,0.3)";
+            ctx.fill();
+            ctx.stroke();
+            // all key points
+            const s1x = wx(S1),
+              s2x = wx(S2);
+            dot(Ax, Ay, 5, "#7ec87e");
+            boldLabel(
+              Ax + (SX > AVG ? 8 : -8),
+              Ay + (TXY >= 0 ? 12 : -12),
+              "A(x-face)",
+              "#7ec87e",
+              8.5,
+              SX > AVG ? "left" : "right",
+            );
+            dot(Bx, By, 5, "#e06060");
+            boldLabel(
+              Bx + (SY > AVG ? 8 : -8),
+              By + (-TXY >= 0 ? 12 : -12),
+              "B(y-face)",
+              "#e06060",
+              8.5,
+              SY > AVG ? "left" : "right",
+            );
+            dot(s1x, CY, 6, "#7ec87e");
+            boldLabel(s1x, CY - 14, "σ₁", "#7ec87e", 10);
+            dot(s2x, CY, 6, "#e06060");
+            boldLabel(s2x, CY - 14, "σ₂", "#e06060", 10);
+            dot(Ccx, CY - Rcv, 5, "#c9a84c");
+            boldLabel(Ccx + 6, CY - Rcv - 10, "τmax", "#c9a84c", 9, "left");
+            dot(Ccx, CY + Rcv, 5, "#c9a84c");
+            dot(Ccx, Ccy, 4, "#7eb8f0");
+            boldLabel(Ccx, Ccy - 10, "C", "#7eb8f0", 9);
+            // diameter
+            ctx.strokeStyle = "#3a4a5a";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(Ax, Ay);
+            ctx.lineTo(Bx, By);
+            ctx.stroke();
+            // example point at 45° real = 90° on circle
+            const angA = Math.atan2(Ay - Ccy, Ax - Ccx);
+            const angNew = angA + (Math.PI / 2) * (TXY >= 0 ? 1 : -1); // 90° rotation on circle
+            const Nx = Ccx + Rcv * Math.cos(angNew),
+              Ny = Ccy + Rcv * Math.sin(angNew);
+            dot(Nx, Ny, 5, "#c9a84c");
+            ctx.strokeStyle = "#c9a84c";
+            ctx.lineWidth = 0.8;
+            ctx.setLineDash([2, 2]);
+            ctx.beginPath();
+            ctx.moveTo(Ax, Ay);
+            ctx.arc(Ccx, Ccy, Rcv, angA, angNew, TXY < 0);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            boldLabel(
+              Nx + (Nx > Ccx ? 8 : -8),
+              Ny + (Ny > Ccy ? 10 : -10),
+              "θ=45°",
+              "#c9a84c",
+              8.5,
+              Nx > Ccx ? "left" : "right",
+            );
+            // summary text bottom
+            boldLabel(
+              W / 2,
+              H - 12,
+              "Complete Mohr's Circle — all orientations visible at once",
+              "#5a5a70",
+              8.5,
+            );
+          },
+        },
+      ];
+
+      // ── Show step ─────────────────────────────────────────────────────
+      function showStep(i) {
+        stepIdx = Math.max(0, Math.min(i, STEPS.length - 1));
+        const s = STEPS[stepIdx];
+        document.getElementById("exTitle").textContent = s.title;
+        document.getElementById("exBody").innerHTML = s.body();
+        document.getElementById("progFill").style.width =
+          ((stepIdx + 1) / STEPS.length) * 100 + "%";
+        document.querySelectorAll(".step-btn").forEach((b, bi) => {
+          b.classList.toggle("active", bi === stepIdx);
+          b.classList.toggle("done", bi < stepIdx);
+        });
+        document.getElementById("btnPrev").disabled = stepIdx === 0;
+        document.getElementById("btnNext").disabled =
+          stepIdx === STEPS.length - 1;
+        s.draw();
+      }
+
+      function next() {
+        if (stepIdx < STEPS.length - 1) showStep(stepIdx + 1);
+      }
+      function prev() {
+        if (stepIdx > 0) showStep(stepIdx - 1);
+      }
+      function autoPlay() {
+        if (autoT) {
+          clearTimeout(autoT);
+          autoT = null;
+          return;
+        }
+        let i = stepIdx;
+        function go() {
+          if (i >= STEPS.length) return;
+          showStep(i);
+          i++;
+          autoT = setTimeout(go, 4200);
+        }
+        go();
+      }
+
+      // ── Build step buttons ────────────────────────────────────────────
+      const sb = document.getElementById("stepBtns");
+      STEPS.forEach((s, i) => {
+        const b = document.createElement("button");
+        b.className = "step-btn";
+        const short = s.title.replace(/Step \d+ — /, "").substring(0, 22);
+        b.innerHTML = `<span style="font-size:9px;opacity:0.4;display:block">Step ${i + 1}</span>${short}`;
+        b.onclick = () => showStep(i);
+        sb.appendChild(b);
+      });
+
+      showStep(0);
+    </script>
+  </body>
+</html>
