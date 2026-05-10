@@ -598,42 +598,74 @@ At these orientations σ = σavg = <b>${AVG.toFixed(3)} MPa</b> on both faces (n
           }
         },
         {
-          title: "Step 9 — Read any plane: rotate around the circle",
-          dur: 3200,
-          body: () => `For an arbitrary angle θ from the x-axis:<br>
-1. Start at A (θ=0°). 2. Rotate by <b>2θ</b> around the circle. 3. Read (σ, τ).<br><br>
-Watch a point traverse the whole circle below — it visits every possible orientation.
-<span class="g">One diagram, every orientation. That's the entire point of Mohr's circle.</span>`,
-          subs: ["Rotating around circle","All orientations","Complete"],
+          title: "Step 9 — Summary: all values on one diagram",
+          dur: 2600,
+          body: () => `Everything we computed, labeled on the circle:<br>
+• Centre <b>C = (σavg, 0) = (${AVG.toFixed(2)}, 0)</b><br>
+• Radius <b>R = τmax = ${R.toFixed(2)} MPa</b><br>
+• Principal stresses <b>σ₁ = ${S1.toFixed(2)}</b>, <b>σ₂ = ${S2.toFixed(2)}</b><br>
+• Principal angles <b>θp1 = ${TP1.toFixed(2)}°</b>, <b>θp2 = ${TP2.toFixed(2)}°</b><br>
+• Max-shear angle <b>θs1 = ${TS1.toFixed(2)}°</b><br>
+• On Mohr's plane: <b>2θp = ${TWO_THETA_P.toFixed(2)}°</b> from A to σ₁<br><br>
+<span class="g">One picture — every key result of the stress transformation.</span>`,
+          subs: ["Circle + points","Principal & τmax","All labels"],
           paint: (t) => {
             drawAxes(1);
-            ring(Ccx, Ccy, Rcv, "#7eb8f0", 1.6);
+            // filled circle
             ctx.save(); ctx.fillStyle="rgba(30,40,60,0.22)"; ctx.beginPath(); ctx.arc(Ccx,Ccy,Rcv,0,Math.PI*2); ctx.fill(); ctx.restore();
-            // markers
-            dot(Ax, Ay, 4, "#7ec87e"); tagLab(Ax+(SX>=AVG?9:-9), Ay, "A", "#7ec87e", 9, SX>=AVG?"left":"right");
-            dot(Bx, By, 4, "#e06060"); tagLab(Bx+(SY>=AVG?9:-9), By, "B", "#e06060", 9, SY>=AVG?"left":"right");
-            dot(s1x, CY, 5, "#7ec87e"); tagLab(s1x, CY-13, "σ₁", "#7ec87e", 9);
-            dot(s2x, CY, 5, "#e06060"); tagLab(s2x, CY-13, "σ₂", "#e06060", 9);
-            dot(Ccx, CY-Rcv, 4, "#c9a84c"); dot(Ccx, CY+Rcv, 4, "#c9a84c");
-            dot(Ccx, Ccy, 3, "#7eb8f0");
-            // moving point — full revolution
-            const a = angA - Math.PI*2*t; // CCW screen
-            const px = Ccx + Rcv*Math.cos(a);
-            const py = Ccy + Rcv*Math.sin(a);
-            // trail
-            ctx.save(); ctx.strokeStyle="rgba(201,168,76,0.55)"; ctx.lineWidth=1.4;
-            ctx.beginPath(); ctx.arc(Ccx, Ccy, Rcv, angA, a, true); ctx.stroke(); ctx.restore();
-            // diameter to current point
-            ctx.save(); ctx.strokeStyle="#c9a84c"; ctx.lineWidth=1;
-            ctx.beginPath(); ctx.moveTo(Ccx, Ccy); ctx.lineTo(px, py); ctx.stroke(); ctx.restore();
-            dot(px, py, 5, "#c9a84c");
-            // current σ, τ readout
-            const σnow = AVG + (px - Ccx)/SCALE;
-            const τnow = (py - CY)/SCALE;
-            const θreal = (-(a - angA) * 180/Math.PI) / 2;
-            tagLab(px + (px>Ccx?10:-10), py + (py>Ccy?12:-12),
-                   `θ=${θreal.toFixed(0)}°  (σ=${σnow.toFixed(1)}, τ=${τnow.toFixed(1)})`,
-                   "#c9a84c", 9, px>Ccx?"left":"right");
+            ring(Ccx, Ccy, Rcv, "#7eb8f0", 1.6);
+
+            // diameter A–B
+            ctx.save(); ctx.strokeStyle="#8a7a3a"; ctx.lineWidth=1;
+            ctx.beginPath(); ctx.moveTo(Ax,Ay); ctx.lineTo(Bx,By); ctx.stroke(); ctx.restore();
+
+            // radius line C → σ1 (shows R)
+            ctx.save(); ctx.strokeStyle="#c9a84c"; ctx.lineWidth=1.2; ctx.setLineDash([4,3]);
+            ctx.beginPath(); ctx.moveTo(Ccx,Ccy); ctx.lineTo(s1x,CY); ctx.stroke(); ctx.restore();
+
+            // 2θp arc from A to σ1
+            ctx.save(); ctx.strokeStyle="#c9a84c"; ctx.lineWidth=1.4;
+            const arcR = Rcv*0.42;
+            const dir = TWO_THETA_P >= 0 ? -1 : 1; // screen direction (τ-down)
+            ctx.beginPath(); ctx.arc(Ccx,Ccy, arcR, angA, 0, dir<0); ctx.stroke(); ctx.restore();
+
+            // points
+            dot(Ax, Ay, 4.5, "#7ec87e");
+            dot(Bx, By, 4.5, "#e06060");
+            dot(s1x, CY, 5, "#7ec87e");
+            dot(s2x, CY, 5, "#e06060");
+            dot(Ccx, CY-Rcv, 4.5, "#c9a84c");
+            dot(Ccx, CY+Rcv, 4.5, "#c9a84c");
+            dot(Ccx, Ccy, 3.5, "#7eb8f0");
+
+            // progressive label reveal
+            const p1 = Math.min(1, t/0.33);
+            const p2 = Math.min(1, Math.max(0,(t-0.30)/0.35));
+            const p3 = Math.min(1, Math.max(0,(t-0.60)/0.40));
+
+            if(p1>0.2){
+              tagLab(Ax+(SX>=AVG?10:-10), Ay, `A (σx=${SX}, τxy=${TXY})`, "#7ec87e", 9, SX>=AVG?"left":"right");
+              tagLab(Bx+(SY>=AVG?10:-10), By, `B (σy=${SY}, −τxy=${(-TXY)})`, "#e06060", 9, SY>=AVG?"left":"right");
+              tagLab(Ccx, Ccy-14, `C (σavg=${AVG.toFixed(2)}, 0)`, "#7eb8f0", 9.5);
+            }
+            if(p2>0.2){
+              tagLab(s1x, CY-14, `σ₁=${S1.toFixed(2)}`, "#7ec87e", 9.5);
+              tagLab(s2x, CY-14, `σ₂=${S2.toFixed(2)}`, "#e06060", 9.5);
+              tagLab(Ccx, CY-Rcv-14, `+τmax = R = ${R.toFixed(2)}`, "#c9a84c", 9.5);
+              tagLab(Ccx, CY+Rcv+14, `−τmax`, "#c9a84c", 9.5);
+              // R label on the dashed radius
+              tagLab((Ccx+s1x)/2, CY-10, `R=${R.toFixed(2)}`, "#c9a84c", 9);
+            }
+            if(p3>0.2){
+              // 2θp label near arc
+              const midA = angA + (0 - angA)/2;
+              const lx = Ccx + (arcR+12)*Math.cos(midA);
+              const ly = Ccy + (arcR+12)*Math.sin(midA);
+              tagLab(lx, ly, `2θp=${TWO_THETA_P.toFixed(2)}°`, "#c9a84c", 9);
+              // angles summary card pinned bottom-left of canvas
+              tagLab(10, H-30, `θp1=${TP1.toFixed(2)}°  θp2=${TP2.toFixed(2)}°`, "#c9a84c", 9, "left");
+              tagLab(10, H-16, `θs1=${TS1.toFixed(2)}°   τmax=${R.toFixed(2)}`, "#c9a84c", 9, "left");
+            }
           }
         }
       ];
