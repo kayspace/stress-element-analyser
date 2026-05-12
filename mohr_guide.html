@@ -235,19 +235,28 @@
         ctx.strokeStyle="#1a1a22"; ctx.lineWidth=0.5;
         for(let x=0;x<W;x+=30){ ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
         for(let y=0;y<H;y+=30){ ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
-        // σ axis growing left-to-right
-        const xEnd = 18 + (W-32) * progress;
-        arrow(18, CY, xEnd, CY, "#3a3a50", 1);
-        if(progress >= 0.95) blab(W-10, CY-4, "σ", "#7a7a90", 12, "left", "bottom");
-        // τ axis growing top-down (positive τ downward)
-        const yEnd = 16 + (H-30) * progress;
-        arrow(CX, 16, CX, yEnd, "#3a3a50", 1);
+        const originX = wx(0);
+        const originY = CY;
+        // σ axis runs through the actual σ=0 origin
+        const xLeft = 18;
+        const xRight = W - 18;
+        arrow(xLeft, originY, xLeft + (originX - xLeft) * progress, originY, "#3a3a50", 1);
+        arrow(originX, originY, originX + (xRight - originX) * progress, originY, "#3a3a50", 1);
+        if(progress >= 0.95) blab(xRight, originY-4, "σ", "#7a7a90", 12, "left", "bottom");
+        // τ axis runs through the same origin point
+        const yTop = 16;
+        const yBottom = H - 16;
+        arrow(originX, yTop, originX, yTop + (originY - yTop) * progress, "#3a3a50", 1);
+        arrow(originX, originY, originX, originY + (yBottom - originY) * progress, "#3a3a50", 1);
         if(progress >= 0.95){
-          blab(CX+5, 14, "τ", "#7a7a90", 12, "left", "top");
+          blab(originX + 5, yTop, "τ", "#7a7a90", 12, "left", "top");
           // small "+" indicator on downward direction
-          lab(CX+8, H-22, "+τ", "#5a5a70", 9, "left");
+          lab(originX + 8, H - 22, "+τ", "#5a5a70", 9, "left");
         }
-        lab(CX-8, CY-8, "0", "#3a3a50", 9);
+        ctx.strokeStyle="#4a4a5a"; ctx.lineWidth=1;
+        ctx.beginPath(); ctx.moveTo(originX, originY-4); ctx.lineTo(originX, originY+4); ctx.stroke();
+        lab(originX, originY-8, "0", "#3a3a50", 9);
+        lab(Ccx, CY-16, "σavg", "#7ec87e", 9);
       }
 
       function drawDashLine(x1,y1,x2,y2,col,prog){
@@ -330,7 +339,13 @@ This makes rotations on the circle go in the <b>same screen direction</b> as on 
               blab(CX+5, 14, "τ", "#7a7a90", 12, "left", "top");
               lab(CX+8, H-22, "+τ (down)", "#5a5a70", 9, "left");
             }
-            lab(CX-8, CY-8, "0", "#3a3a50", 9);
+            const sigmaZeroX = wx(0);
+            if(sigmaZeroX >= 18 && sigmaZeroX <= 18 + (W-32)*pσ){
+              ctx.strokeStyle="#4a4a5a"; ctx.lineWidth=1;
+              ctx.beginPath(); ctx.moveTo(sigmaZeroX, CY-4); ctx.lineTo(sigmaZeroX, CY+4); ctx.stroke();
+              lab(sigmaZeroX, CY-8, "0", "#3a3a50", 9);
+            }
+            lab(Ccx, CY-16, "σavg", "#7ec87e", 9);
           }
         },
         {
@@ -349,10 +364,12 @@ Represents the +x face: σ on x = <b>${SX}</b>, τ on x = <b>${TXY}</b> (${TXY>=
             const ph = Math.min(1, t/0.4);
             const pv = Math.min(1, Math.max(0,(t-0.4)/0.35));
             const pd = Math.min(1, Math.max(0,(t-0.75)/0.25));
-            // moving cursor along axes
-            drawDashLine(CX, CY, Ax, CY, "#2a3a2a", ph);
+            const originX = wx(0);
+            const originY = CY;
+            // moving cursor along axes from actual origin
+            drawDashLine(originX, originY, Ax, originY, ph);
             if(ph>=1){
-              drawDashLine(Ax, CY, Ax, Ay, "#2a3a2a", pv);
+              drawDashLine(Ax, originY, Ax, Ay, pv);
             }
             // tick on σ axis
             if(ph>0.05){
