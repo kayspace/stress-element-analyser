@@ -1,7 +1,7 @@
 # Stress Element Analyzer
 
 An interactive web-based tool for analyzing 2D stress states.
-It computes principal stresses, maximum shear stress, and visualizes stress transformation through an animated rotating element.
+It computes principal stresses, maximum shear stress, and visualizes stress transformation through an animated rotating element, visualizes mohr circle construction.
 
 ## Overview
 
@@ -19,6 +19,7 @@ The application then:
 - Determines maximum shear stress (τmax)
 - Calculates orientation angles
 - Animates the stress element as it rotates to key states
+- Also updates both the tranformation and mohr guide for the given data
 
 ## Features
 
@@ -35,6 +36,11 @@ The application then:
   1. Original stress state
   2. Principal stress state
   3. Maximum shear state
+
+- Step by step full plane transformation guide with animated visualizations
+
+- Step by step full mohr circle drawing guide wih animated visualizations
+
 
 ## How to Use
 
@@ -60,7 +66,18 @@ The project includes two guide pages to support both algebraic and graphical lea
 
 These guides explain the calculations, how the element rotates, and how Mohr's circle represents the same results.
 
-## Technical Formulas
+## Technicals
+
+### Sign Convention
+
+- Normal stress:
+  - Positive → Tension
+  - Negative → Compression
+
+- Shear stress (τxy):
+  - Positive → Counter-clockwise tendency
+  - Negative → Clockwise tendency
+
 
 ### Stress Transformation Equations
 
@@ -114,27 +131,13 @@ The canvas-based renderer displays:
 - Rotating stress element
 - Real-time stress updates on element faces
 - Smooth animated transitions between states
-
-## Sign Convention
-
-- Normal stress:
-  - Positive → Tension
-  - Negative → Compression
-
-- Shear stress (τxy):
-  - Positive → Counter-clockwise tendency
-  - Negative → Clockwise tendency
+- Mohr circle construction states
 
 ## Tech Stack
 
 - HTML5
 - CSS3
 - Vanilla JavaScript (no dependencies)
-
-## License
-
-Licensed under GPL-3.0. See [LICENSE](LICENSE) for details.
-
 - Canvas API for rendering
 
 ## Project Structure
@@ -170,12 +173,12 @@ This project uses dual licensing:
 
 ### Code
 
-Licensed under GNU AGPL v3.0  
+Licensed under [GNU AGPL v3.0](LICENSE)
 → Applies to all source code, rendering logic, and application behavior
 
 ### Educational Content
 
-Licensed under CC BY-NC-SA 4.0  
+Licensed under [CC BY-NC-SA 4.0](LICENSE_CONTENT.md)
 → Applies to explanations, guide steps, and instructional material
 
 ### What this means
