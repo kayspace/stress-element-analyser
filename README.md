@@ -41,7 +41,6 @@ The application then:
 
 - Step by step full mohr circle drawing guide wih animated visualizations
 
-
 ## How to Use
 
 1. Open `index.html` in your web browser.
@@ -54,7 +53,7 @@ The application then:
    - **1 — Original**: Shows the input stress state.
    - **2 — Principal stresses**: Rotated to eliminate shear.
    - **3 — Max shear**: Rotated to maximum shear orientation.
-   - **▶ Auto-play**: Automatically cycles through the transformations.
+   - **Auto-play**: Automatically cycles through the transformations.
 5. Click **"View Full Plane Transformation Guide"** for detailed explanations.
 
 ## Guides
@@ -65,6 +64,17 @@ The project includes two guide pages to support both algebraic and graphical lea
 - **[Mohr's Circle Guide](mohr_guide.html)**: Graphical construction of Mohr's circle, with centre, radius, principal stress points, and the relation between circle angle and physical rotation.
 
 These guides explain the calculations, how the element rotates, and how Mohr's circle represents the same results.
+
+## Books
+
+The following textbooks were used as reference material while developing this project:
+
+- **Strength of Materials by R.K. Bansal, 6th Edition**
+  - [Archive PDF reference](https://ia601904.us.archive.org/24/items/StrengthOfMaterialsByR.K.Bansal/Strength%20of%20Materials%20by%20R.K.Bansal.pdf)
+  - [Amazon](https://www.amazon.in/Strength-Materials-S-I-Units-Bansal/dp/B0CZ996YRP/ref=asc_df_B0CZ996YRP?tag=googleshopdes-21&hvadid=709963367270&hvpos=&hvnetw=g&hvrand=2096295048005692090&hvpone=&hvptwo=&hvqmt=&hvdev=c&hvdvcmdl=&hvlocint=&hvlocphy=9152562&hvtargid=pla-2379953159237&psc=1&hvocijid=2096295048005692090-B0CZ996YRP-&hvexpln=0)
+- **Aircraft Structures by David J. Megson, 5th Edition**
+  - [Archive PDF reference](https://booksite.elsevier.com/samplechapters/9780080969053/Front_Matter.pdf)
+  - [Amazon](https://www.amazon.in/AIRCRAFT-STRUCTURES-ENGINEERING-STUDENTS-2017/dp/9382291059/ref=sr_1_3?crid=2XXEXW8GB0DZL&dib=eyJ2IjoiMSJ9.meMQKFZiAIgYUpW7CGxelBlHmEhqy8qjIsJc5Thz3QGh5XyESWNHGMcVXvWKOnrXJB1k355V4Z2tr_DHx8cROjdqDkqKcNEc4iopi-hguKeAIc7qbyHU1UeiWsSsuuy_Jk7FcLIr4RAT8Sdlww9MsNSFL4hUfbApPArGCRyc9UtWV7-SfHGcy051eOteq_ydXGeTgNog3OjNV0yhhtYps9MZjYF4LULhRywsI3fXLf0.r772gYiw4wW7njGD2DdL53HWgye7lz1QMu2Q-BUjxyA&dib_tag=se&keywords=aircraft+structures&qid=1778771970&s=books&sprefix=aircraft+structure,stripbooks,403&sr=1-3)
 
 ## Technicals
 
@@ -77,7 +87,6 @@ These guides explain the calculations, how the element rotates, and how Mohr's c
 - Shear stress (τxy):
   - Positive → Counter-clockwise tendency
   - Negative → Clockwise tendency
-
 
 ### Stress Transformation Equations
 
